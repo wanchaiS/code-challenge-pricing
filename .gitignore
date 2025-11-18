@@ -1,0 +1,16 @@
+# Environment variables
+/api/.env
+/api/.env.*
+/api/!.env.example
+
+# Dependencies
+/api/node_modules
+
+# TypeScript build output
+/api/dist
+
+# OS generated files
+.DS_Store
+
+# Test coverage
+/api/coverage
