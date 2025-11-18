@@ -1,2 +1,3 @@
-# code-challenge-pricing
-code challenge
+# Assumption
+
+- one currency supported AUD
