@@ -1,15 +1,16 @@
+import { corsOptions } from "#middleware/cors.js";
+import express from "express";
+import swaggerUi from "swagger-ui-express";
 import { generateSwaggerSpec } from "./config/swagger.js";
 import { errorHandler } from "./middleware/errorHandler.js";
 import productRoutes from "./products/product.routes.js";
-import express from "express";
-import swaggerUi from "swagger-ui-express";
 
 const app = express();
 const port = process.env["PORT"] ?? "9001";
 
 // Middleware
 app.use(express.json());
-// app.use(corsOptions);
+app.use(corsOptions);
 
 // Health check
 app.get("/", (_, res) => {
@@ -19,7 +20,7 @@ app.get("/", (_, res) => {
 // API Routes
 app.use("/api/products", productRoutes);
 
-// Generate OpenAPI spec AFTER routes are registered
+// Generate OpenAPI spec "AFTER" routes are registered
 const swaggerSpec = generateSwaggerSpec();
 
 // API Documentation
