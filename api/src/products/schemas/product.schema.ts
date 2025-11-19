@@ -26,7 +26,7 @@ export const productQuerySchema = z.object({
     description: 'Filter by brand ID',
     example: 'brand-1',
   }),
-});
+}).strict();
 
 /**
  * Schema for product ID parameter

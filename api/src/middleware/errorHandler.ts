@@ -1,4 +1,4 @@
-import type { Request, Response, NextFunction } from "express";
+import type { NextFunction, Request, Response } from "express";
 import { ZodError } from "zod";
 
 /**
@@ -8,6 +8,7 @@ export class ApiError extends Error {
   constructor(
     public statusCode: number,
     message: string,
+    public code = "API_ERROR",
   ) {
     super(message);
     this.name = "ApiError";
@@ -27,7 +28,7 @@ export function errorHandler(
   // Zod validation errors
   if (err instanceof ZodError) {
     res.status(400).json({
-      error: "Validation Error",
+      code: "VALIDATION_ERROR",
       message: "Invalid request data",
       details: err.issues.map((issue) => ({
         path: issue.path.join("."),
@@ -40,7 +41,7 @@ export function errorHandler(
   // Custom API errors
   if (err instanceof ApiError) {
     res.status(err.statusCode).json({
-      error: err.name,
+      code: err.code,
       message: err.message,
     });
     return;
@@ -49,7 +50,7 @@ export function errorHandler(
   // Unknown errors
   console.error("Unexpected error:", err);
   res.status(500).json({
-    error: "Internal Server Error",
+    code: "INTERNAL_SERVER_ERROR",
     message: "An unexpected error occurred",
   });
 }
@@ -58,5 +59,5 @@ export function errorHandler(
  * Helper to create 404 Not Found errors
  */
 export function notFound(resource: string): ApiError {
-  return new ApiError(404, `${resource} not found`);
+  return new ApiError(404, `${resource} not found`, "NOT_FOUND");
 }

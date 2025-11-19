@@ -1,0 +1,39 @@
+  {
+    "version": "0.2.0",
+    "configurations": [
+      {
+        "name": "🚀 Debug Server",
+        "type": "node",
+        "request": "launch",
+        "runtimeExecutable": "node",
+        "runtimeArgs": ["--import", "tsx", "--watch"],
+        "args": ["src/index.ts"],
+        "cwd": "${workspaceFolder}/api",
+        "console": "integratedTerminal",
+        "envFile": "${workspaceFolder}/api/.env",
+        "skipFiles": ["<node_internals>/**"],
+        "restart": true,
+        "sourceMaps": true
+      },
+      {
+        "name": "🧪 Debug All Tests",
+        "type": "node",
+        "request": "launch",
+        "runtimeExecutable": "npm",
+        "runtimeArgs": ["test"],
+        "cwd": "${workspaceFolder}/api",
+        "console": "integratedTerminal",
+        "internalConsoleOptions": "neverOpen"
+      },
+      {
+        "name": "🎯 Debug Current Test",
+        "type": "node",
+        "request": "launch",
+        "program": "${workspaceFolder}/api/node_modules/vitest/vitest.mjs",
+        "args": ["run", "${file}"],
+        "cwd": "${workspaceFolder}/api",
+        "console": "integratedTerminal",
+        "skipFiles": ["<node_internals>/**"]
+      }
+    ]
+  }

@@ -14,6 +14,18 @@ export default defineConfig(
   tseslint.configs.strict,
   tseslint.configs.stylistic,
   {
+      files: ["**/*.ts", "**/*.tsx"],
+      rules: {
+        "@typescript-eslint/no-unused-vars": [
+          "error",
+          {
+            argsIgnorePattern: "^_",
+            varsIgnorePattern: "^_",
+          },
+        ],
+      },
+    },
+  {
     files: ["**/*.test.ts", "**/*.spec.ts"],
     plugins: {
       vitest,
