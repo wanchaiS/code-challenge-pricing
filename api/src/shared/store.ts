@@ -1,5 +1,6 @@
-import type { PricingProfile, User } from '../types/index.js'
-import { seedBrands, seedCategories, seedProducts, seedSegments, seedSubCategories, seedUser } from './seed.js'
+import type { PricingProfile } from '../profiles/models/profile.model.js';
+import type { User } from './types.js';
+import { seedBrands, seedCategories, seedProducts, seedSegments, seedSubCategories, seedUser } from './seed.js';
 
 // In-memory database simulating MongoDB collections
 export const db = {

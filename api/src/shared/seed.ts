@@ -1,4 +1,6 @@
-import type { Brand, Category, Product, Segment, SubCategory, User } from '../types/index.js'
+import type { Brand, Category, Segment, SubCategory } from '../products/models/references.model.js';
+import type { Product } from '../products/models/product.model.js';
+import type { User } from './types.js';
 
 const userId = 'user-1' // Our sample user
 const orgId = 'org-1' // Our sample organization

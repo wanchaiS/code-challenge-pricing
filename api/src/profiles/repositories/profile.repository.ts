@@ -1,5 +1,6 @@
-import { AdjustmentType, IncrementType, type CreatePricingProfileDto, type PricingProfile, type UpdatePricingProfileDto } from '../../types/index.js'
-import { db } from '../store.js'
+import { db } from '#shared/store.js';
+import { AdjustmentType, IncrementType } from '#shared/types.js';
+import type { CreatePricingProfileDto, PricingProfile, UpdatePricingProfileDto } from '../models/profile.model.js';
 
 export const profileRepository = {
   /**

@@ -1,6 +1,6 @@
-import { profileRepository } from '../data/repositories/profile.repository.js'
-import type { Product } from '../types/index.js'
-import { AdjustmentType, IncrementType } from '../types/index.js'
+import { profileRepository } from '../profiles/repositories/profile.repository.js';
+import type { Product } from './models/product.model.js';
+import { AdjustmentType, IncrementType } from '../shared/types.js';
 
 /**
  * Calculate the new price based on adjustment rules

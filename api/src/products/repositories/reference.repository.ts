@@ -1,5 +1,5 @@
-import type { Brand, Category, Segment, SubCategory } from '../../types/index.js'
-import { db } from '../store.js'
+import type { Brand, Category, Segment, SubCategory } from '../models/references.model.js';
+import { db } from '../../shared/store.js';
 
 // Category Repository
 export const categoryRepository = {

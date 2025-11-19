@@ -1,6 +1,6 @@
-import Fuse from 'fuse.js'
-import type { Product, ProductFilter } from '../../types/index.js'
-import { db } from '../store.js'
+import Fuse from 'fuse.js';
+import type { Product, ProductFilter } from '../models/product.model.js';
+import { db } from '../../shared/store.js';
 
 export const productRepository = {
   /**
