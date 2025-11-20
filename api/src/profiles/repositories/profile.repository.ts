@@ -1,6 +1,6 @@
 import { db } from '#shared/store.js';
-import { AdjustmentType, IncrementType } from '#shared/types.js';
-import type { CreatePricingProfileDto, PricingProfile, UpdatePricingProfileDto } from '../models/profile.model.js';
+import { AdjustmentType, IncrementType, SelectionType } from '#shared/types.js';
+import type { CreatePricingProfileInput, PricingProfile, UpdatePricingProfileInput } from '../models/profile.model.js';
 
 export const profileRepository = {
   /**
@@ -20,13 +20,15 @@ export const profileRepository = {
   /**
    * Create a new pricing profile
    */
-  create(orgId: string, dto: CreatePricingProfileDto): PricingProfile {
+  create(orgId: string, dto: CreatePricingProfileInput): PricingProfile {
     const now = new Date()
     const profile: PricingProfile = {
       _id: `profile-${Date.now()}-${Math.random().toString(36).slice(2, 9)}`,
       adjustmentType: AdjustmentType.DYNAMIC,
       basedOn: null,
       createdAt: now,
+      adjustmentValueForAll: null,
+      selectionType: SelectionType.MULTIPLE,
       incrementType: IncrementType.DECREASE,
       name: dto.name,
       productAdjustments: [],
@@ -41,7 +43,7 @@ export const profileRepository = {
   /**
    * Update a pricing profile
    */
-  update(id: string, dto: UpdatePricingProfileDto): PricingProfile | null {
+  update(id: string, dto: UpdatePricingProfileInput): PricingProfile | null {
     const index = db.pricingProfiles.findIndex((p) => p._id === id)
     if (index === -1) {
       return null

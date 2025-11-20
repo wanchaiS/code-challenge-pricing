@@ -13,20 +13,17 @@ export function validate(schema: {
     try {
       // Validate query parameters
       if (schema.query) {
-        const parsedQuery = await schema.query.parseAsync(req.query);
-        req.query = parsedQuery as typeof req.query;
+        await schema.query.parseAsync(req.query);
       }
 
       // Validate route parameters
       if (schema.params) {
-        const parsedParams = await schema.params.parseAsync(req.params);
-        req.params = parsedParams as typeof req.params;
+        await schema.params.parseAsync(req.params);
       }
 
       // Validate request body
       if (schema.body) {
-        const parsedBody = await schema.body.parseAsync(req.body);
-        req.body = parsedBody as typeof req.body;
+        await schema.body.parseAsync(req.body);
       }
 
       next();

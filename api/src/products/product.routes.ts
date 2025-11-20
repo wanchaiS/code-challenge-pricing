@@ -8,6 +8,7 @@ import {
   productQuerySchema,
 } from "./schemas/product.schema.js";
 import { Router } from "express";
+import { asyncHandler } from "../shared/asyncHandler.js";
 import { z } from "zod";
 
 const router = Router();
@@ -52,7 +53,7 @@ registry.registerPath({
   },
 });
 
-router.get("/", validate({ query: productQuerySchema }), getProducts);
+router.get("/", validate({ query: productQuerySchema }), asyncHandler(getProducts));
 
 // ============== Route: GET /api/products/:id ==============
 
@@ -94,6 +95,6 @@ registry.registerPath({
   },
 });
 
-router.get("/:id", validate({ params: productIdSchema }), getProductById);
+router.get("/:id", validate({ params: productIdSchema }), asyncHandler(getProductById));
 
 export default router;

@@ -4,6 +4,7 @@ import swaggerUi from "swagger-ui-express";
 import { generateSwaggerSpec } from "./config/swagger.js";
 import { errorHandler } from "./middleware/errorHandler.js";
 import productRoutes from "./products/product.routes.js";
+import profileRoutes from "./profiles/profile.routes.js";
 
 const app = express();
 const port = process.env["PORT"] ?? "9001";
@@ -19,6 +20,7 @@ app.get("/", (_, res) => {
 
 // API Routes
 app.use("/api/products", productRoutes);
+app.use("/api/pricing-profiles", profileRoutes);
 
 // Generate OpenAPI spec "AFTER" routes are registered
 const swaggerSpec = generateSwaggerSpec();

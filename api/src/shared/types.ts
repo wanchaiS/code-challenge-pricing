@@ -14,6 +14,12 @@ export enum IncrementType {
   INCREASE = 'increase',
 }
 
+export enum SelectionType {
+  ALL = 'all',
+  MULTIPLE = 'multiple',
+  ONE = 'one',
+}
+
 // ============== Shared Domain Models =================
 
 export interface User {
