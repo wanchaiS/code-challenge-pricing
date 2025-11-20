@@ -5,12 +5,24 @@
 
 # Dependencies
 /api/node_modules
+/client/node_modules
 
 # TypeScript build output
 /api/dist
+/client/dist
 
 # OS generated files
 .DS_Store
 
 # Test coverage
 /api/coverage
+/client/coverage
+
+# Frontend env files
+/client/.env
+/client/.env.*
+/client/!.env.example
+
+/client/dist-ssr
+/client/*.local
+/client/.tanstack
