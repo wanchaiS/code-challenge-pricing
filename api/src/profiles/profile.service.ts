@@ -46,9 +46,9 @@ export function getPricingProfileDetail(id: string): PricingProfileDetail {
   return { profile, items };
 }
 
-export function createPricingProfile(name: string): PricingProfile {
+export function createPricingProfile(name: string, selectionType: SelectionType): PricingProfile {
   const user = getCurrentUser();
-  return profileRepository.create(user.orgId, { name });
+  return profileRepository.create(user.orgId, { name, selectionType });
 }
 
 

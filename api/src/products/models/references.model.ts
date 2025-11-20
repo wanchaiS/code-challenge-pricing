@@ -26,3 +26,10 @@ export interface Segment {
   name: string;
   orgId: string;
 }
+
+export interface Style {
+  _id: string;
+  name: string;
+  subCategoryId: string;
+  orgId: string;
+}

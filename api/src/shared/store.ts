@@ -1,6 +1,6 @@
 import type { PricingProfile } from '../profiles/models/profile.model.js';
 import type { User } from './types.js';
-import { seedBrands, seedCategories, seedProducts, seedSegments, seedSubCategories, seedUser } from './seed.js';
+import { seedBrands, seedCategories, seedProducts, seedSegments, seedStyles, seedSubCategories, seedUser } from './seed.js';
 
 // In-memory database simulating MongoDB collections
 export const db = {
@@ -13,6 +13,7 @@ export const db = {
   categories: [...seedCategories],
   subCategories: [...seedSubCategories],
   segments: [...seedSegments],
+  styles: [...seedStyles],
 }
 
 // Helper to reset database
@@ -21,6 +22,7 @@ export const resetDb = (): void => {
   db.categories = [...seedCategories]
   db.subCategories = [...seedSubCategories]
   db.segments = [...seedSegments]
+  db.styles = [...seedStyles]
   db.brands = [...seedBrands]
   db.products = [...seedProducts]
   db.pricingProfiles = []

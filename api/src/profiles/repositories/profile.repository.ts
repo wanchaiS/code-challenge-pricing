@@ -1,5 +1,5 @@
 import { db } from '#shared/store.js';
-import { AdjustmentType, IncrementType, SelectionType } from '#shared/types.js';
+import { AdjustmentType, IncrementType } from '#shared/types.js';
 import type { CreatePricingProfileInput, PricingProfile, UpdatePricingProfileInput } from '../models/profile.model.js';
 
 export const profileRepository = {
@@ -28,7 +28,7 @@ export const profileRepository = {
       basedOn: null,
       createdAt: now,
       adjustmentValueForAll: null,
-      selectionType: SelectionType.MULTIPLE,
+      selectionType: dto.selectionType,
       incrementType: IncrementType.DECREASE,
       name: dto.name,
       productAdjustments: [],

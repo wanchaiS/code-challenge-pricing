@@ -127,6 +127,7 @@ const profileCoreSchema = z.discriminatedUnion("selectionType", [
 export const createProfileSchema = z
   .object({
     name: baseProfileFields.shape.name,
+    selectionType: selectionTypeSchema,
   })
   .openapi("CreateProfile");
 

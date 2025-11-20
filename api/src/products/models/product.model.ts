@@ -7,6 +7,7 @@ export interface Product {
   categoryId: string;
   globalWholesalePrice: number;
   segmentId: string;
+  styleId?: string;
   skuCode: string;
   subCategoryId: string;
   title: string;
@@ -17,8 +18,11 @@ export interface Product {
  * Product filter for search and filtering
  */
 export interface ProductFilter {
+  categoryId?: string;
   brandId?: string;
   search?: string;
+  searchField?: "title" | "sku";
   segmentId?: string;
   subCategoryId?: string;
+  styleId?: string;
 }

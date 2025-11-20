@@ -1,6 +1,6 @@
 import Fuse from 'fuse.js';
-import type { Product, ProductFilter } from '../models/product.model.js';
 import { db } from '../../shared/store.js';
+import type { Product, ProductFilter } from '../models/product.model.js';
 
 export const productRepository = {
   /**
@@ -44,6 +44,10 @@ export const productRepository = {
       products = products.filter((p) => p.brandId === filters.brandId)
     }
 
+    if (filters.categoryId) {
+      products = products.filter((p) => p.categoryId === filters.categoryId)
+    }
+
     if (filters.segmentId) {
       products = products.filter((p) => p.segmentId === filters.segmentId)
     }
@@ -52,14 +56,18 @@ export const productRepository = {
       products = products.filter((p) => p.subCategoryId === filters.subCategoryId)
     }
 
+    if (filters.styleId) {
+      products = products.filter((p) => p.styleId === filters.styleId)
+    }
+
     // ─────────────────────────────────────────────────────────────────
     // Stage 3: Fuzzy search on the ALREADY FILTERED dataset
     // ─────────────────────────────────────────────────────────────────
 
-    if (filters.search) {
+     if (filters.search) {
       const fuse = new Fuse(products, {
         includeScore: true,
-        keys: ['title', 'skuCode'], 
+        keys: !filters.searchField ? ['title', 'skuCode'] : [filters.searchField],
         minMatchCharLength: 2, 
         threshold: 0.4, // 0 = exact match, 1 = match anything
       })

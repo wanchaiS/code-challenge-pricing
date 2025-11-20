@@ -9,10 +9,20 @@ extendZodWithOpenApi(z);
 /**
  * Schema for product query parameters (filters)
  */
+export const searchFieldSchema = z.enum(["title", "sku"]).openapi({
+  description: "Restrict fuzzy search to a specific field. Omit to search both.",
+  example: "title",
+});
+
 export const productQuerySchema = z.object({
   search: z.string().optional().openapi({
     description: 'Fuzzy search by product title or SKU code',
     example: 'koyama',
+  }),
+  searchField: searchFieldSchema.optional(),
+  categoryId: z.string().optional().openapi({
+    description: 'Filter by category ID',
+    example: 'category-1',
   }),
   subCategoryId: z.string().optional().openapi({
     description: 'Filter by subcategory ID',
@@ -25,6 +35,10 @@ export const productQuerySchema = z.object({
   brandId: z.string().optional().openapi({
     description: 'Filter by brand ID',
     example: 'brand-1',
+  }),
+  styleId: z.string().optional().openapi({
+    description: 'Filter by style ID (wine only)',
+    example: 'style-1',
   }),
 }).strict();
 
@@ -64,6 +78,10 @@ export const subCategoryDtoSchema = z.object({
   name: z.string().openapi({ example: 'Wine' }),
 }).openapi('SubCategory');
 
+export const subCategoryFilterSchema = subCategoryDtoSchema.extend({
+  categoryId: z.string().openapi({ example: 'category-1' }),
+}).openapi('SubCategoryFilter');
+
 /**
  * Segment DTO schema for API responses
  */
@@ -71,6 +89,30 @@ export const segmentDtoSchema = z.object({
   _id: z.string().openapi({ example: 'segment-1' }),
   name: z.string().openapi({ example: 'Red' }),
 }).openapi('Segment');
+
+export const styleDtoSchema = z.object({
+  _id: z.string().openapi({ example: 'style-1' }),
+  name: z.string().openapi({ example: 'Pinot Noir' }),
+  subCategoryId: z.string().openapi({ example: 'subcat-1' }),
+}).openapi('Style');
+
+export const productFilterOptionsSchema = z.object({
+  categories: z.array(categoryDtoSchema).openapi({
+    description: 'Available product categories for the current organization',
+  }),
+  subCategories: z.array(subCategoryFilterSchema).openapi({
+    description: 'Available subcategories for the current organization',
+  }),
+  segments: z.array(segmentDtoSchema).openapi({
+    description: 'Available product segments for the current organization',
+  }),
+  brands: z.array(brandDtoSchema).openapi({
+    description: 'Available brands for the current organization',
+  }),
+  styles: z.array(styleDtoSchema).openapi({
+    description: 'Available styles (wine only). Empty when supplier has no wine.',
+  }),
+}).openapi('ProductFilterOptions');
 
 /**
  * Product DTO schema for API responses
@@ -103,6 +145,9 @@ export const productDtoSchema = z.object({
   }),
   segment: segmentDtoSchema.nullable().openapi({
     description: 'Segment information',
+  }),
+  style: styleDtoSchema.nullable().openapi({
+    description: 'Style information (wine only)',
   }),
 }).openapi('ProductDto');
 
@@ -141,5 +186,11 @@ export type ProductDto = z.infer<typeof productDtoSchema>;
 export type BrandDto = z.infer<typeof brandDtoSchema>;
 export type CategoryDto = z.infer<typeof categoryDtoSchema>;
 export type SubCategoryDto = z.infer<typeof subCategoryDtoSchema>;
+export type SubCategoryFilterDto = z.infer<typeof subCategoryFilterSchema>;
 export type SegmentDto = z.infer<typeof segmentDtoSchema>;
+export type StyleDto = z.infer<typeof styleDtoSchema>;
+export type ProductFilterOptionsResponse = z.infer<
+  typeof productFilterOptionsSchema
+>;
+export type SearchField = z.infer<typeof searchFieldSchema>;
 export type ErrorResponse = z.infer<typeof errorSchema>;

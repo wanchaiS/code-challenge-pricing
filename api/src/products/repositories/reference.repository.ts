@@ -1,4 +1,4 @@
-import type { Brand, Category, Segment, SubCategory } from '../models/references.model.js';
+import type { Brand, Category, Segment, Style, SubCategory } from '../models/references.model.js';
 import { db } from '../../shared/store.js';
 
 // Category Repository
@@ -101,5 +101,17 @@ export const brandRepository = {
    */
   findAll(): Brand[] {
     return db.brands
+  },
+}
+
+export const styleRepository = {
+  findByOrgId(orgId: string): Style[] {
+    return db.styles.filter((style) => style.orgId === orgId)
+  },
+  findBySubCategoryId(subCategoryId: string): Style[] {
+    return db.styles.filter((style) => style.subCategoryId === subCategoryId)
+  },
+  findAll(): Style[] {
+    return db.styles
   },
 }

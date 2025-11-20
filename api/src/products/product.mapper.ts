@@ -1,9 +1,10 @@
 import type { Product } from "./models/product.model.js";
-import type { Brand, Category, Segment, SubCategory } from "./models/references.model.js";
+import type { Brand, Category, Segment, Style, SubCategory } from "./models/references.model.js";
 import {
   brandRepository,
   categoryRepository,
   segmentRepository,
+  styleRepository,
   subCategoryRepository,
 } from "./repositories/reference.repository.js";
 import type { ProductDto } from "./schemas/product.schema.js";
@@ -13,6 +14,7 @@ export interface ProductReferenceLookups {
   categories: Map<string, Category>;
   segments: Map<string, Segment>;
   subCategories: Map<string, SubCategory>;
+  styles: Map<string, Style>;
 }
 
 // Build lookup maps for reference data by orgId
@@ -23,12 +25,14 @@ export function buildProductReferenceLookups(orgId: string): ProductReferenceLoo
   const categories = categoryRepository.findByOrgId(orgId);
   const segments = segmentRepository.findByOrgId(orgId);
   const subCategories = subCategoryRepository.findByOrgId(orgId);
+  const styles = styleRepository.findByOrgId(orgId);
 
   return {
     brands: new Map(brands.map((entry) => [entry._id, entry])),
     categories: new Map(categories.map((entry) => [entry._id, entry])),
     segments: new Map(segments.map((entry) => [entry._id, entry])),
     subCategories: new Map(subCategories.map((entry) => [entry._id, entry])),
+    styles: new Map(styles.map((entry) => [entry._id, entry])),
   };
 }
 
@@ -37,6 +41,7 @@ export function mapProductDto(product: Product, lookups: ProductReferenceLookups
   const category = lookups.categories.get(product.categoryId);
   const segment = lookups.segments.get(product.segmentId);
   const subCategory = lookups.subCategories.get(product.subCategoryId);
+  const style = product.styleId ? lookups.styles.get(product.styleId) : undefined;
 
   return {
     _id: product._id,
@@ -46,6 +51,9 @@ export function mapProductDto(product: Product, lookups: ProductReferenceLookups
     segment: segment ? { _id: segment._id, name: segment.name } : null,
     skuCode: product.skuCode,
     subCategory: subCategory ? { _id: subCategory._id, name: subCategory.name } : null,
+    style: style
+      ? { _id: style._id, name: style.name, subCategoryId: style.subCategoryId }
+      : null,
     title: product.title,
   };
 }

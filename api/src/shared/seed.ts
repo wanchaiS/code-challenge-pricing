@@ -1,4 +1,4 @@
-import type { Brand, Category, Segment, SubCategory } from '../products/models/references.model.js';
+import type { Brand, Category, Segment, Style, SubCategory } from '../products/models/references.model.js';
 import type { Product } from '../products/models/product.model.js';
 import type { User } from './types.js';
 
@@ -96,6 +96,27 @@ export const seedSegments: Segment[] = [
   },
 ]
 
+export const seedStyles: Style[] = [
+  {
+    _id: 'style-1',
+    name: 'Pinot Noir',
+    subCategoryId: 'subcat-1',
+    orgId,
+  },
+  {
+    _id: 'style-2',
+    name: 'Brut',
+    subCategoryId: 'subcat-1',
+    orgId,
+  },
+  {
+    _id: 'style-3',
+    name: 'Riesling',
+    subCategoryId: 'subcat-1',
+    orgId,
+  },
+]
+
 export const seedBrands: Brand[] = [
   {
     _id: 'brand-1',
@@ -126,6 +147,7 @@ export const seedProducts: Product[] = [
     subCategoryId: 'subcat-1', // Wine
     title: 'High Garden Pinot Noir 2021',
     orgId,
+    styleId: 'style-1',
   },
   {
     _id: 'prod-2',
@@ -137,6 +159,7 @@ export const seedProducts: Product[] = [
     subCategoryId: 'subcat-1', // Wine
     title: 'Koyama Methode Brut Nature NV',
     orgId,
+    styleId: 'style-2',
   },
   {
     _id: 'prod-3',
@@ -148,6 +171,7 @@ export const seedProducts: Product[] = [
     subCategoryId: 'subcat-1', // Wine
     title: 'Koyama Riesling 2018',
     orgId,
+    styleId: 'style-3',
   },
   {
     _id: 'prod-4',
@@ -159,6 +183,7 @@ export const seedProducts: Product[] = [
     subCategoryId: 'subcat-1', // Wine
     title: 'Koyama Tussock Riesling 2019',
     orgId,
+    styleId: 'style-3',
   },
   {
     _id: 'prod-5',
@@ -170,5 +195,6 @@ export const seedProducts: Product[] = [
     subCategoryId: 'subcat-1', // Wine
     title: 'Lacourte-Godbillon Brut Cru NV',
     orgId,
+    styleId: 'style-2',
   },
 ]

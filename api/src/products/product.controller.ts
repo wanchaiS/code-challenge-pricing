@@ -21,6 +21,30 @@ export async function getProducts(
   res.json(products.map((product) => mapProductDto(product, lookups)));
 }
 
+export async function searchProducts(
+  req: Request<unknown, unknown, unknown, ProductQuery>,
+  res: Response,
+): Promise<void> {
+  const currentUser = getCurrentUser();
+  const filters = req.query;
+
+  const hasFilters =
+    Boolean(filters.search && filters.search.trim().length >= 2) ||
+    Boolean(filters.brandId) ||
+    Boolean(filters.categoryId) ||
+    Boolean(filters.segmentId) ||
+    Boolean(filters.subCategoryId);
+
+  if (!hasFilters) {
+    res.json([]);
+    return;
+  }
+
+  const products = productRepository.search(currentUser.orgId, filters);
+  const lookups = buildProductReferenceLookups(currentUser.orgId);
+  res.json(products.map((product) => mapProductDto(product, lookups)));
+}
+
 /**
  * GET /api/products/:id
  * Get a single product by ID

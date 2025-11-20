@@ -1,4 +1,7 @@
 import type { Request, Response } from "express";
+import type { z } from "zod";
+import type { PricingProfile } from "./models/profile.model.js";
+import type { PricingProfileDetail, ProfileDetailItem } from "./profile.service.js";
 import {
   createPricingProfile,
   deletePricingProfile,
@@ -7,9 +10,6 @@ import {
   previewProfilePricing,
   updatePricingProfile,
 } from "./profile.service.js";
-import type { PricingProfile } from "./models/profile.model.js";
-import type { PricingProfileDetail, ProfileDetailItem } from "./profile.service.js";
-import type { z } from "zod";
 import { createProfileSchema, updateProfileSchema } from "./schemas/profile.schema.js";
 
 type CreateProfileInput = z.infer<typeof createProfileSchema>;
@@ -35,7 +35,7 @@ export async function createProfileController(
   req: Request<unknown, unknown, CreateProfileInput>,
   res: Response<PricingProfile>,
 ): Promise<void> {
-  const profile = createPricingProfile(req.body.name);
+  const profile = createPricingProfile(req.body.name, req.body.selectionType);
   res.status(201).json(profile);
 }
 

@@ -28,6 +28,7 @@ export interface ProductAdjustment {
  */
 export interface CreatePricingProfileInput {
   name: string;
+  selectionType: SelectionType;
 }
 
 export interface UpdatePricingProfileInput {
