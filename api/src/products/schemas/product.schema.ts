@@ -9,7 +9,7 @@ extendZodWithOpenApi(z);
 /**
  * Schema for product query parameters (filters)
  */
-export const searchFieldSchema = z.enum(["title", "sku"]).openapi({
+export const searchFieldSchema = z.enum(["title", "skuCode"]).openapi({
   description: "Restrict fuzzy search to a specific field. Omit to search both.",
   example: "title",
 });

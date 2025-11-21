@@ -1,10 +1,10 @@
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { RouterProvider, createRouter } from '@tanstack/react-router'
 import { StrictMode } from 'react'
 import ReactDOM from 'react-dom/client'
-import {
-  QueryClient,
-  QueryClientProvider,
-} from '@tanstack/react-query'
+import { LoaderComponent } from './components/LoaderComponent'
+import { LoaderError } from './components/LoaderError'
+import { NotFound } from './components/NotFound'
 
 // Import the generated route tree
 import { routeTree } from './routeTree.gen'
@@ -17,10 +17,11 @@ const router = createRouter({
   context: {
     queryClient: undefined!,
   },
+  defaultNotFoundComponent: NotFound,
+  defaultPendingComponent: LoaderComponent,
+  defaultErrorComponent: LoaderError,
   defaultPreload: 'intent',
   scrollRestoration: true,
-  defaultStructuralSharing: true,
-  defaultPreloadStaleTime: 0,
 })
 
 // Register the router instance for type safety
