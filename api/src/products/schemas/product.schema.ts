@@ -52,6 +52,56 @@ export const productIdSchema = z.object({
   }),
 });
 
+/**
+ * Shared payload fields for create/update operations
+ */
+const productPayloadSchema = z.object({
+  title: z
+    .string()
+    .min(1, "Title is required")
+    .openapi({ description: "Product title", example: "High Garden Pinot Noir 2021" }),
+  skuCode: z
+    .string()
+    .min(1, "SKU code is required")
+    .openapi({ description: "SKU code", example: "HGVPIN216" }),
+  globalWholesalePrice: z
+    .number()
+    .nonnegative("Price must be zero or greater")
+    .openapi({ description: "Global wholesale price", example: 275.5 }),
+  brandId: z
+    .string()
+    .min(1, "Brand is required")
+    .openapi({ description: "Brand ID", example: "brand-1" }),
+  categoryId: z
+    .string()
+    .min(1, "Category is required")
+    .openapi({ description: "Category ID", example: "cat-1" }),
+  subCategoryId: z
+    .string()
+    .min(1, "Subcategory is required")
+    .openapi({ description: "Subcategory ID", example: "subcat-1" }),
+  segmentId: z
+    .string()
+    .min(1, "Segment is required")
+    .openapi({ description: "Segment ID", example: "seg-1" }),
+  styleId: z
+    .string()
+    .min(1)
+    .optional()
+    .nullable()
+    .openapi({ description: "Optional style ID", example: "style-1" }),
+}).strict();
+
+export const createProductSchema = productPayloadSchema.openapi("CreateProductInput");
+
+export const updateProductSchema = productPayloadSchema
+  .partial()
+  .refine(
+    (payload) => Object.keys(payload).length > 0,
+    "At least one field must be provided",
+  )
+  .openapi("UpdateProductInput");
+
 // ============== Response Schemas (DTOs) ==============
 
 /**
@@ -194,3 +244,5 @@ export type ProductFilterOptionsResponse = z.infer<
 >;
 export type SearchField = z.infer<typeof searchFieldSchema>;
 export type ErrorResponse = z.infer<typeof errorSchema>;
+export type CreateProductInput = z.infer<typeof createProductSchema>;
+export type UpdateProductInput = z.infer<typeof updateProductSchema>;

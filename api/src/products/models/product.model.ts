@@ -21,7 +21,7 @@ export interface ProductFilter {
   categoryId?: string;
   brandId?: string;
   search?: string;
-  searchField?: "title" | "sku";
+  searchField?: "title" | "skuCode";
   segmentId?: string;
   subCategoryId?: string;
   styleId?: string;

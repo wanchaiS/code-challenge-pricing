@@ -1,9 +1,18 @@
-import { productRepository } from "./repositories/product.repository.js";
-import { getCurrentUser } from "../shared/store.js";
-import { notFound } from "../middleware/errorHandler.js";
-import type { ProductIdParam, ProductQuery } from "./schemas/product.schema.js";
-import { mapProductDto, buildProductReferenceLookups } from "./product.mapper.js";
 import type { Request, Response } from "express";
+import type {
+  CreateProductInput,
+  ProductIdParam,
+  ProductQuery,
+  UpdateProductInput,
+} from "./schemas/product.schema.js";
+import {
+  createProductService,
+  deleteProductService,
+  getProductService,
+  listProductsService,
+  searchProductsService,
+  updateProductService,
+} from "./product.service.js";
 
 /**
  * GET /api/products
@@ -13,36 +22,19 @@ export async function getProducts(
   req: Request<unknown, unknown, unknown, ProductQuery>,
   res: Response,
 ): Promise<void> {
-  const currentUser = getCurrentUser();
-  const filters = req.query;
-
-  const products = productRepository.search(currentUser.orgId, filters);
-  const lookups = buildProductReferenceLookups(currentUser.orgId);
-  res.json(products.map((product) => mapProductDto(product, lookups)));
+  const products = listProductsService(req.query);
+  res.json(products);
 }
 
+/**
+ * GET /api/products/search
+ */
 export async function searchProducts(
   req: Request<unknown, unknown, unknown, ProductQuery>,
   res: Response,
 ): Promise<void> {
-  const currentUser = getCurrentUser();
-  const filters = req.query;
-
-  const hasFilters =
-    Boolean(filters.search && filters.search.trim().length >= 2) ||
-    Boolean(filters.brandId) ||
-    Boolean(filters.categoryId) ||
-    Boolean(filters.segmentId) ||
-    Boolean(filters.subCategoryId);
-
-  if (!hasFilters) {
-    res.json([]);
-    return;
-  }
-
-  const products = productRepository.search(currentUser.orgId, filters);
-  const lookups = buildProductReferenceLookups(currentUser.orgId);
-  res.json(products.map((product) => mapProductDto(product, lookups)));
+  const products = searchProductsService(req.query);
+  res.json(products);
 }
 
 /**
@@ -53,14 +45,41 @@ export async function getProductById(
   req: Request<ProductIdParam>,
   res: Response,
 ): Promise<void> {
-  const { id } = req.params;
+  const product = getProductService(req.params.id);
+  res.json(product);
+}
 
-  const currentUser = getCurrentUser();
-  const product = productRepository.findById(id);
-  if (!product) {
-    throw notFound("Product");
-  }
+/**
+ * POST /api/products
+ * Create a new product
+ */
+export async function createProduct(
+  req: Request<unknown, unknown, CreateProductInput>,
+  res: Response,
+): Promise<void> {
+  const product = createProductService(req.body);
+  res.status(201).json(product);
+}
 
-  const lookups = buildProductReferenceLookups(currentUser.orgId);
-  res.json(mapProductDto(product, lookups));
+/**
+ * PUT /api/products/:id
+ * Update an existing product
+ */
+export async function updateProduct(
+  req: Request<ProductIdParam, unknown, UpdateProductInput>,
+  res: Response,
+): Promise<void> {
+  const product = updateProductService(req.params.id, req.body);
+  res.json(product);
+}
+
+/**
+ * DELETE /api/products/:id
+ */
+export async function deleteProduct(
+  req: Request<ProductIdParam>,
+  res: Response,
+): Promise<void> {
+  deleteProductService(req.params.id);
+  res.status(204).send();
 }

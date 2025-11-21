@@ -111,6 +111,9 @@ export const styleRepository = {
   findBySubCategoryId(subCategoryId: string): Style[] {
     return db.styles.filter((style) => style.subCategoryId === subCategoryId)
   },
+  findById(id: string): Style | undefined {
+    return db.styles.find((style) => style._id === id)
+  },
   findAll(): Style[] {
     return db.styles
   },
