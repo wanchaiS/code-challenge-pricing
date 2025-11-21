@@ -35,14 +35,14 @@ export function BasedOnSection({
         <DropdownSelect
           className="w-full md:w-80"
           label="Based on profile"
-          placeholder="Based On Price"
+          placeholder="Select profile"
           value={basedOnValue ?? ''}
           options={basedOnOptions.map((profile) => ({
             label: profile.name,
             value: profile._id,
           }))}
           onChange={(value) => onBasedOnChange(value || null)}
-          emptyLabel="No based profile"
+          allowClear
           disabled={loadingProfiles}
         />
       </div>

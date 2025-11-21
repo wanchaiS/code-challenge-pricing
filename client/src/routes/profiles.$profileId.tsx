@@ -1,7 +1,7 @@
 import { BasedOnSection } from '@/components/BaseOnSection'
-import { SelectionDialog } from '@/components/ConfirmationDialog'
 import { ProfileProductsTable } from '@/components/ProfileProductsTable'
 import { SearchProducts } from '@/components/SearchProducts'
+import { SelectionDialog } from '@/components/ui/SelectionDialog'
 import {
   fetchProfileDetail,
   fetchProfiles,

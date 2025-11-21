@@ -1,4 +1,5 @@
 import type { AdjustmentType, IncrementType, SelectionType } from '@/lib/types'
+import { cn } from '@/lib/utils'
 import { RefreshCw } from 'lucide-react'
 import { useMemo } from 'react'
 
@@ -89,6 +90,51 @@ export function ProfileProductsTable({
     return `${percentSign} ${absValue} %`
   }
 
+  const adjustmentFieldClass =
+    'flex h-full min-h-[42px] min-w-[140px] w-full items-center justify-end border px-3 text-sm font-semibold text-emerald-700'
+
+  const renderAdjustmentCell = (item: TableProduct) => {
+    const displayValue = isAllMode
+      ? formatAdjustmentDisplay(adjustmentValueForAll ?? 0)
+      : formatAdjustmentDisplay(item.adjustmentValue)
+
+    if (!isAllMode && editingCell?.id === item.productId) {
+      return (
+        <div
+          className={cn(adjustmentFieldClass, 'border-emerald-200 bg-white')}
+        >
+          <input
+            autoFocus
+            type="number"
+            min={0}
+            value={editingCell.value}
+            onChange={(event) => onChangeEditingValue(event.target.value)}
+            onBlur={onCommitEditing}
+            onKeyDown={(event) => {
+              if (event.key === 'Enter') {
+                onCommitEditing()
+              } else if (event.key === 'Escape') {
+                onCancelEditing()
+              }
+            }}
+            className="w-full border-none bg-transparent text-center text-sm font-semibold text-emerald-700 focus:outline-none"
+          />
+        </div>
+      )
+    }
+
+    return (
+      <div
+        className={cn(
+          adjustmentFieldClass,
+          'border-emerald-200 bg-emerald-50 text-emerald-700 text-right',
+        )}
+      >
+        {displayValue}
+      </div>
+    )
+  }
+
   return (
     <div className="space-y-5">
       {isAllMode ? (
@@ -171,11 +217,11 @@ export function ProfileProductsTable({
               <th className="px-4 py-2 text-left font-medium">Product Title</th>
               <th className="px-4 py-2 text-left font-medium">SKU Code</th>
               <th className="px-4 py-2 text-left font-medium">Category</th>
-              <th className="px-4 py-2 text-left font-medium">
+              <th className="px-4 py-2 text-right font-medium">
                 Based on Price
               </th>
-              <th className="px-4 py-2 text-left font-medium">Adjustment</th>
-              <th className="px-4 py-2 text-left font-medium">New Price</th>
+              <th className="px-4 py-2 font-medium text-right">Adjustment</th>
+              <th className="px-4 py-2 text-right font-medium">New Price</th>
             </tr>
           </thead>
           <tbody>
@@ -205,7 +251,10 @@ export function ProfileProductsTable({
                         type="checkbox"
                         checked={checked}
                         onChange={(event) =>
-                          onToggleSelection(item.productId, event.target.checked)
+                          onToggleSelection(
+                            item.productId,
+                            event.target.checked,
+                          )
                         }
                         disabled={isAllMode}
                         className="h-4 w-4 rounded border-slate-300 text-emerald-600 focus:ring-emerald-500"
@@ -219,60 +268,26 @@ export function ProfileProductsTable({
                     <td className="px-4 py-3 text-slate-600">
                       {item.categoryName ?? '—'}
                     </td>
-                    <td className="px-4 py-3 text-slate-900">
-                      ${basedOnPrice.toFixed(2)}
+                    <td className="px-4 py-3 text-slate-900 text-right">
+                      ${basedOnPrice}
                     </td>
-                    <td className="px-4 py-3">
-                      {isAllMode ? (
-                        <div className="inline-flex w-32 justify-center rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-sm font-semibold text-slate-700">
-                          {formatAdjustmentDisplay(adjustmentValueForAll ?? 0)}
-                        </div>
-                      ) : editingCell?.id === item.productId ? (
-                        <div className="inline-flex w-32 items-center justify-center gap-1 rounded-lg border border-emerald-200 bg-white px-3 py-2 text-sm font-semibold text-emerald-700">
-                          {adjustmentType === 'fixed' ? (
-                            <span className="text-slate-500">$</span>
-                          ) : null}
-                          <input
-                            autoFocus
-                            type="number"
-                            value={editingCell.value}
-                            onChange={(event) =>
-                              onChangeEditingValue(event.target.value)
-                            }
-                            onBlur={onCommitEditing}
-                            onKeyDown={(event) => {
-                              if (event.key === 'Enter') {
-                                onCommitEditing()
-                              } else if (event.key === 'Escape') {
-                                onCancelEditing()
-                              }
-                            }}
-                            className="w-full border-none bg-transparent text-center text-sm font-semibold text-emerald-700 focus:outline-none"
-                          />
-                          {adjustmentType === 'dynamic' ? (
-                            <span className="text-slate-500">%</span>
-                          ) : null}
-                        </div>
-                      ) : (
-                        <div
-                          className="inline-flex w-32 cursor-pointer justify-center rounded-lg border border-emerald-200 bg-emerald-50 px-3 py-2 text-sm font-semibold text-emerald-700"
-                          onDoubleClick={() =>
-                            onStartEditing(item.productId, item.adjustmentValue)
-                          }
-                          role="button"
-                          tabIndex={0}
-                          onKeyDown={(event) => {
-                            if (event.key === 'Enter') {
-                              onStartEditing(item.productId, item.adjustmentValue)
-                            }
-                          }}
-                        >
-                          {formatAdjustmentDisplay(item.adjustmentValue)}
-                        </div>
-                      )}
+                    <td
+                      role="button"
+                      tabIndex={0}
+                      className="w-40 p-0"
+                      onDoubleClick={() =>
+                        onStartEditing(item.productId, item.adjustmentValue)
+                      }
+                      onKeyDown={(event) => {
+                        if (event.key === 'Enter') {
+                          onStartEditing(item.productId, item.adjustmentValue)
+                        }
+                      }}
+                    >
+                      {renderAdjustmentCell(item)}
                     </td>
-                    <td className="px-4 py-3 font-semibold text-slate-900">
-                      {newPrice !== undefined ? `$${newPrice.toFixed(2)}` : '—'}
+                    <td className="px-4 py-3 font-semibold text-slate-900 text-right">
+                      {newPrice !== undefined ? `$${newPrice}` : '—'}
                     </td>
                   </tr>
                 )

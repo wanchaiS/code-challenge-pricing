@@ -78,7 +78,16 @@ async function request<T>(input: RequestInfo, init?: RequestInit): Promise<T> {
     throw new Error(errorBody || res.statusText)
   }
 
-  return res.json() as Promise<T>
+  if (res.status === 204) {
+    return undefined as T
+  }
+
+  const contentType = res.headers.get('content-type') ?? ''
+  if (contentType.includes('application/json')) {
+    return res.json() as Promise<T>
+  }
+
+  return (await res.text()) as T
 }
 
 export function fetchProfiles() {
@@ -128,6 +137,41 @@ export interface ProductSearchParams {
 
 export function fetchProductFilters() {
   return request<ProductFilterOptions>('/api/products/filters')
+}
+
+export function fetchProducts() {
+  return request<ProductSummary[]>('/api/products')
+}
+
+export interface CreateProductInput {
+  title: string
+  skuCode: string
+  globalWholesalePrice: number
+  brandId: string
+  categoryId: string
+  subCategoryId: string
+  segmentId: string
+  styleId?: string
+}
+
+export function createProduct(input: CreateProductInput) {
+  return request<ProductSummary>('/api/products', {
+    method: 'POST',
+    body: JSON.stringify(input),
+  })
+}
+
+export function updateProduct(id: string, input: CreateProductInput) {
+  return request<ProductSummary>(`/api/products/${id}`, {
+    method: 'PUT',
+    body: JSON.stringify(input),
+  })
+}
+
+export function deleteProduct(id: string) {
+  return request<void>(`/api/products/${id}`, {
+    method: 'DELETE',
+  })
 }
 
 export function searchProducts(params: ProductSearchParams) {

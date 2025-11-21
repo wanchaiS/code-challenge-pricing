@@ -331,6 +331,7 @@ export function SearchProducts({
                 { label: 'Product title', value: 'title' },
                 { label: 'SKU only', value: 'skuCode' },
               ]}
+              allowClear
             />
             <CategoryDropdown
               loading={filtersLoading}

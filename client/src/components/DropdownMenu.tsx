@@ -3,6 +3,7 @@ import {
   createContext,
   useContext,
   useEffect,
+  useId,
   useRef,
   useState,
   type ButtonHTMLAttributes,
@@ -14,6 +15,7 @@ interface DropdownContextValue {
   open: boolean
   setOpen: (next: boolean) => void
   triggerRef: React.RefObject<HTMLButtonElement>
+  triggerWidth: number | null
 }
 
 const DropdownMenuContext = createContext<DropdownContextValue | null>(null)
@@ -27,8 +29,18 @@ export function DropdownMenu({
 }) {
   const [open, setOpen] = useState(false)
   const triggerRef = useRef<HTMLButtonElement>(null!)
+  const [triggerWidth, setTriggerWidth] = useState<number | null>(null)
+
+  useEffect(() => {
+    if (open && triggerRef.current) {
+      setTriggerWidth(triggerRef.current.offsetWidth)
+    }
+  }, [open])
+
   return (
-    <DropdownMenuContext.Provider value={{ open, setOpen, triggerRef }}>
+    <DropdownMenuContext.Provider
+      value={{ open, setOpen, triggerRef, triggerWidth }}
+    >
       <div className={`relative inline-block text-left ${className}`}>
         {children}
       </div>
@@ -99,7 +111,11 @@ export function DropdownMenuContent({
       {...rest}
       ref={contentRef}
       role="menu"
-      className={`absolute right-0 z-20 mt-2 min-w-[220px] rounded-xl border border-slate-200 bg-white p-1 shadow-xl ${className}`}
+      className={`absolute right-0 z-20 mt-2 rounded-xl border border-slate-200 bg-white p-1 shadow-xl ${className}`}
+      style={{
+        minWidth: ctx.triggerWidth ?? 220,
+        width: ctx.triggerWidth ?? undefined,
+      }}
     >
       {children}
     </div>
@@ -138,7 +154,7 @@ export function DropdownMenuItem({
         onSelect?.()
         ctx.setOpen(false)
       }}
-      className={`flex w-full items-center justify-between rounded-lg px-3 py-2 text-sm text-slate-700 hover:bg-slate-50 ${active ? 'bg-emerald-50 text-emerald-700' : ''} ${className}`}
+      className={`flex w-full items-center text-left justify-between rounded-lg px-3 py-2 text-sm text-slate-700 hover:bg-slate-50 ${active ? 'bg-emerald-50 text-emerald-700' : ''} ${className}`}
     >
       {children}
     </button>
@@ -157,8 +173,9 @@ interface DropdownSelectProps {
   options: DropdownOption[]
   onChange: (value: string) => void
   disabled?: boolean
-  emptyLabel?: string
   className?: string
+  allowClear?: boolean
+  hasLabel?: boolean
 }
 
 export function DropdownSelect({
@@ -168,39 +185,52 @@ export function DropdownSelect({
   options,
   onChange,
   disabled,
-  emptyLabel,
   className = '',
+  allowClear,
+  hasLabel = false,
 }: DropdownSelectProps) {
   const activeOption = options.find((option) => option.value === value) ?? null
-  const defaultLabel = emptyLabel ?? `All ${label}`
+  const labelId = useId()
 
   return (
-    <DropdownMenu className={className}>
-      <DropdownMenuTrigger
-        disabled={disabled}
-        className="flex w-full items-center justify-between rounded-xl border border-slate-200 px-3 py-2 text-sm text-slate-700 focus:outline-none focus:ring-2 focus:ring-emerald-200 disabled:bg-slate-50"
-      >
-        <span className="truncate">
-          {activeOption ? activeOption.label : placeholder}
+    <div className={`flex flex-col gap-1 text-sm ${className}`}>
+      {hasLabel && (
+        <span id={labelId} className="block text-slate-600">
+          {label}
         </span>
-        <ChevronDown className="h-4 w-4 text-slate-400" />
-      </DropdownMenuTrigger>
-      <DropdownMenuContent className="w-56">
-        <DropdownMenuItem onSelect={() => onChange('')} active={!value}>
-          {defaultLabel}
-        </DropdownMenuItem>
-        <DropdownMenuSeparator />
-        {options.map((option) => (
-          <DropdownMenuItem
-            key={option.value}
-            onSelect={() => onChange(option.value)}
-            active={value === option.value}
-          >
-            {option.label}
-          </DropdownMenuItem>
-        ))}
-      </DropdownMenuContent>
-    </DropdownMenu>
+      )}
+      <DropdownMenu>
+        <DropdownMenuTrigger
+          aria-labelledby={labelId}
+          disabled={disabled}
+          className="flex w-full items-center justify-between rounded-xl border border-slate-200 px-3 py-2 text-sm text-slate-700 focus:outline-none focus:ring-2 focus:ring-emerald-200 disabled:bg-slate-50"
+        >
+          <span className="truncate">
+            {activeOption ? activeOption.label : placeholder}
+          </span>
+          <ChevronDown className="h-4 w-4 text-slate-400" />
+        </DropdownMenuTrigger>
+        <DropdownMenuContent>
+          {allowClear && (
+            <>
+              <DropdownMenuItem onSelect={() => onChange('')} active={!value}>
+                None
+              </DropdownMenuItem>
+              <DropdownMenuSeparator />
+            </>
+          )}
+          {options.map((option) => (
+            <DropdownMenuItem
+              key={option.value}
+              onSelect={() => onChange(option.value)}
+              active={value === option.value}
+            >
+              {option.label}
+            </DropdownMenuItem>
+          ))}
+        </DropdownMenuContent>
+      </DropdownMenu>
+    </div>
   )
 }
 
