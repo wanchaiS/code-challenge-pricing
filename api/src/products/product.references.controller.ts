@@ -7,11 +7,11 @@ import {
   styleRepository,
   subCategoryRepository,
 } from "./repositories/reference.repository.js";
-import type { ProductFilterOptionsResponse } from "./schemas/product.schema.js";
+import type { ProductReferencesDto } from "./schemas/product.schema.js";
 
-export async function getProductFilterOptions(
+export async function getProductReferences(
   _req: Request,
-  res: Response<ProductFilterOptionsResponse>,
+  res: Response<ProductReferencesDto>,
 ): Promise<void> {
   const user = getCurrentUser();
   const orgId = user.orgId;

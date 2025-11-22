@@ -1,3 +1,8 @@
+import { Router } from "express";
+import { z } from "zod";
+import { registry } from "../config/swagger.js";
+import { validate } from "../middleware/validation.js";
+import { asyncHandler } from "../shared/asyncHandler.js";
 import {
   createProduct,
   deleteProduct,
@@ -6,21 +11,16 @@ import {
   searchProducts,
   updateProduct,
 } from "./product.controller.js";
-import { getProductFilterOptions } from "./product.filters.controller.js";
-import { registry } from "../config/swagger.js";
-import { validate } from "../middleware/validation.js";
+import { getProductReferences } from "./product.references.controller.js";
 import {
   createProductSchema,
   errorSchema,
   productDtoSchema,
   productIdSchema,
   productQuerySchema,
-  productFilterOptionsSchema,
+  productReferencesSchema,
   updateProductSchema,
 } from "./schemas/product.schema.js";
-import { Router } from "express";
-import { asyncHandler } from "../shared/asyncHandler.js";
-import { z } from "zod";
 
 const router = Router();
 
@@ -116,17 +116,17 @@ router.get(
 
 registry.registerPath({
   method: "get",
-  path: "/api/products/filters",
-  summary: "List filter reference data",
+  path: "/api/products/references",
+  summary: "List references data",
   description:
-    "Returns categories, subcategories, segments, and brands for populating search filters.",
+    "Returns categories, subcategories, segments, and brands.",
   tags: ["Products"],
   responses: {
     200: {
-      description: "Filter reference data",
+      description: "References data",
       content: {
         "application/json": {
-          schema: productFilterOptionsSchema,
+          schema: productReferencesSchema,
         },
       },
     },
@@ -141,7 +141,7 @@ registry.registerPath({
   },
 });
 
-router.get("/filters", asyncHandler(getProductFilterOptions));
+router.get("/references", asyncHandler(getProductReferences));
 
 // ============== Route: GET /api/products/:id ==============
 

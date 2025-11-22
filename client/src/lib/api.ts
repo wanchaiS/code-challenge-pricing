@@ -8,37 +8,37 @@ export interface PricingProfile {
   createdAt: string
 }
 
-export interface ReferenceOption {
+export interface ReferenceEntity {
   _id: string
   name: string
 }
 
-export interface SubCategoryOption extends ReferenceOption {
+export interface SubCategoryOption extends ReferenceEntity {
   categoryId: string
 }
 
-export interface ProductSummary {
+export interface ProductResponse {
   _id: string
   title: string
   skuCode: string
   globalWholesalePrice: number
-  brand: ReferenceOption | null
-  category: ReferenceOption | null
-  subCategory: ReferenceOption | null
-  segment: ReferenceOption | null
-  style: (ReferenceOption & { subCategoryId?: string }) | null
+  brand: ReferenceEntity | null
+  category: ReferenceEntity | null
+  subCategory: ReferenceEntity | null
+  segment: ReferenceEntity | null
+  style: (ReferenceEntity & { subCategoryId?: string }) | null
 }
 
-export interface StyleOption extends ReferenceOption {
+export interface StyleEntity extends ReferenceEntity {
   subCategoryId: string
 }
 
-export interface ProductFilterOptions {
-  categories: ReferenceOption[]
+export interface ProductReferences {
+  categories: ReferenceEntity[]
   subCategories: SubCategoryOption[]
-  segments: ReferenceOption[]
-  brands: ReferenceOption[]
-  styles: StyleOption[]
+  segments: ReferenceEntity[]
+  brands: ReferenceEntity[]
+  styles: StyleEntity[]
 }
 
 export interface ProfileDetail {
@@ -57,7 +57,7 @@ export interface ProfileDetailItem {
     _id: string
     title: string
     skuCode: string
-    category: ReferenceOption | null
+    category: ReferenceEntity | null
     globalWholesalePrice: number
   }
   basedOnPrice: number
@@ -135,12 +135,12 @@ export interface ProductSearchParams {
   styleId?: string
 }
 
-export function fetchProductFilters() {
-  return request<ProductFilterOptions>('/api/products/filters')
+export function fetchProductReferences() {
+  return request<ProductReferences>('/api/products/references')
 }
 
 export function fetchProducts() {
-  return request<ProductSummary[]>('/api/products')
+  return request<ProductResponse[]>('/api/products')
 }
 
 export interface CreateProductInput {
@@ -155,14 +155,14 @@ export interface CreateProductInput {
 }
 
 export function createProduct(input: CreateProductInput) {
-  return request<ProductSummary>('/api/products', {
+  return request<ProductResponse>('/api/products', {
     method: 'POST',
     body: JSON.stringify(input),
   })
 }
 
 export function updateProduct(id: string, input: CreateProductInput) {
-  return request<ProductSummary>(`/api/products/${id}`, {
+  return request<ProductResponse>(`/api/products/${id}`, {
     method: 'PUT',
     body: JSON.stringify(input),
   })
@@ -185,5 +185,5 @@ export function searchProducts(params: ProductSearchParams) {
   const url = queryString
     ? `/api/products/search?${queryString}`
     : '/api/products/search'
-  return request<ProductSummary[]>(url)
+  return request<ProductResponse[]>(url)
 }

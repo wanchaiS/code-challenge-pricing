@@ -1,18 +1,18 @@
-import { ProductForm, type ProductFormValues } from '@/components/ProductForm'
-import type { ProductFilterOptions } from '@/lib/api'
+import type { ProductReferences } from '@/lib/api'
 import { createProduct } from '@/lib/api'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
+import { ProductForm, type ProductFormValues } from './ProductForm'
 
 type AddProductProps = {
   open: boolean
-  filters: ProductFilterOptions | undefined
+  references: ProductReferences | undefined
   isLoadingFilters: boolean
   onClose: () => void
 }
 
 export function AddProduct({
   open,
-  filters,
+  references,
   isLoadingFilters,
   onClose,
 }: AddProductProps) {
@@ -52,7 +52,7 @@ export function AddProduct({
         </p>
       </div>
       <ProductForm
-        filters={filters}
+        references={references}
         isLoadingFilters={isLoadingFilters}
         isSubmitting={createMutation.isPending}
         onSubmit={handleSubmit}

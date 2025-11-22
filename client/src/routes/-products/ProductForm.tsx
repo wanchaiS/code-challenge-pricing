@@ -1,5 +1,6 @@
 import { DropdownSelect } from '@/components/DropdownMenu'
-import type { ProductFilterOptions } from '@/lib/api'
+import { InputField } from '@/components/InputField'
+import type { ProductReferences } from '@/lib/api'
 import { useMemo, useState } from 'react'
 
 const initialFormState = {
@@ -17,7 +18,7 @@ export type ProductFormValues = typeof initialFormState
 
 type ProductFormProps = {
   initialValues?: Partial<ProductFormValues>
-  filters: ProductFilterOptions | undefined
+  references: ProductReferences | undefined
   isLoadingFilters?: boolean
   isSubmitting?: boolean
   onSubmit: (values: ProductFormValues) => Promise<void> | void
@@ -26,7 +27,7 @@ type ProductFormProps = {
 
 export function ProductForm({
   initialValues,
-  filters,
+  references,
   isLoadingFilters = false,
   isSubmitting = false,
   onSubmit,
@@ -38,32 +39,36 @@ export function ProductForm({
     globalWholesalePrice:
       typeof initialValues?.globalWholesalePrice === 'number'
         ? String(initialValues.globalWholesalePrice)
-        : initialValues?.globalWholesalePrice ?? '',
+        : (initialValues?.globalWholesalePrice ?? ''),
   }))
   const [formError, setFormError] = useState<string | null>(null)
 
   const filteredSubCategories = useMemo(() => {
-    const all = filters?.subCategories ?? []
+    const all = references?.subCategories ?? []
     if (!formState.categoryId) return all
     return all.filter((sub) => sub.categoryId === formState.categoryId)
-  }, [filters?.subCategories, formState.categoryId])
+  }, [references?.subCategories, formState.categoryId])
 
   const filteredStyles = useMemo(() => {
-    const all = filters?.styles ?? []
+    const all = references?.styles ?? []
     if (!formState.subCategoryId) return []
-    return all.filter((style) => style.subCategoryId === formState.subCategoryId)
-  }, [filters?.styles, formState.subCategoryId])
+    return all.filter(
+      (style) => style.subCategoryId === formState.subCategoryId,
+    )
+  }, [references?.styles, formState.subCategoryId])
 
   const brandOptions =
-    filters?.brands.map((brand) => ({ value: brand._id, label: brand.name })) ??
-    []
+    references?.brands.map((brand) => ({
+      value: brand._id,
+      label: brand.name,
+    })) ?? []
   const categoryOptions =
-    filters?.categories.map((category) => ({
+    references?.categories.map((category) => ({
       value: category._id,
       label: category.name,
     })) ?? []
   const segmentOptions =
-    filters?.segments.map((segment) => ({
+    references?.segments.map((segment) => ({
       value: segment._id,
       label: segment.name,
     })) ?? []
@@ -159,6 +164,7 @@ export function ProductForm({
           step="0.01"
         />
         <DropdownSelect
+          hasLabel
           label="Brand"
           placeholder="Select brand"
           value={formState.brandId}
@@ -167,6 +173,7 @@ export function ProductForm({
           disabled={isLoadingFilters}
         />
         <DropdownSelect
+          hasLabel
           label="Category"
           placeholder="Select category"
           value={formState.categoryId}
@@ -175,9 +182,12 @@ export function ProductForm({
           disabled={isLoadingFilters}
         />
         <DropdownSelect
+          hasLabel
           label="Subcategory"
           placeholder={
-            formState.categoryId ? 'Select subcategory' : 'Select a category first'
+            formState.categoryId
+              ? 'Select subcategory'
+              : 'Select a category first'
           }
           value={formState.subCategoryId}
           onChange={(value) => updateField('subCategoryId', value)}
@@ -185,6 +195,7 @@ export function ProductForm({
           disabled={!formState.categoryId || subCategoryOptions.length === 0}
         />
         <DropdownSelect
+          hasLabel
           label="Segment"
           placeholder="Select segment"
           value={formState.segmentId}
@@ -193,6 +204,7 @@ export function ProductForm({
           disabled={isLoadingFilters}
         />
         <DropdownSelect
+          hasLabel
           label="Style (optional)"
           placeholder={
             formState.subCategoryId
@@ -210,43 +222,11 @@ export function ProductForm({
         <button
           type="submit"
           disabled={isSubmitting}
-          className="rounded-full bg-emerald-600 px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-emerald-500/30 transition hover:bg-emerald-500 disabled:opacity-60"
+          className="rounded-full cursor-pointer bg-emerald-600 px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-emerald-500/30 transition hover:bg-emerald-500 disabled:opacity-60"
         >
           {isSubmitting ? 'Saving...' : submitLabel}
         </button>
       </div>
     </form>
-  )
-}
-
-type InputFieldProps = {
-  label: string
-  value: string
-  onChange: (value: string) => void
-  placeholder?: string
-  type?: string
-  step?: string
-}
-
-function InputField({
-  label,
-  value,
-  onChange,
-  placeholder,
-  type = 'text',
-  step,
-}: InputFieldProps) {
-  return (
-    <label className="space-y-1 text-sm">
-      <span className="text-slate-600">{label}</span>
-      <input
-        type={type}
-        value={value}
-        onChange={(e) => onChange(e.target.value)}
-        placeholder={placeholder}
-        step={step}
-        className="w-full rounded-xl border border-slate-200 px-4 py-2.5 text-slate-900 focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-200"
-      />
-    </label>
   )
 }

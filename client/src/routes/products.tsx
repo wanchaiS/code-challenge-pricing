@@ -1,11 +1,3 @@
-import { AddProduct } from '@/components/AddProduct'
-import { EditProduct } from '@/components/EditProduct'
-import {
-  deleteProduct,
-  fetchProductFilters,
-  fetchProducts,
-} from '@/lib/api'
-import type { ProductSummary } from '@/lib/api'
 import {
   Dialog,
   DialogContent,
@@ -13,10 +5,14 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog'
-import { Pencil, Trash2 } from 'lucide-react'
+import type { ProductResponse } from '@/lib/api'
+import { deleteProduct, fetchProductReferences, fetchProducts } from '@/lib/api'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { createFileRoute } from '@tanstack/react-router'
 import { useState } from 'react'
+import { AddProduct } from './-products/AddProduct'
+import { EditProduct } from './-products/EditProduct'
+import { ProductsTable } from './-products/ProductsTable'
 
 export const Route = createFileRoute('/products')({
   component: ProductsPage,
@@ -25,21 +21,20 @@ export const Route = createFileRoute('/products')({
 function ProductsPage() {
   const queryClient = useQueryClient()
   const [showAddForm, setShowAddForm] = useState(false)
-  const [editingProduct, setEditingProduct] = useState<ProductSummary | null>(
+  const [editingProduct, setEditingProduct] = useState<ProductResponse | null>(
     null,
   )
-  const [productToDelete, setProductToDelete] = useState<ProductSummary | null>(
-    null,
-  )
+  const [productToDelete, setProductToDelete] =
+    useState<ProductResponse | null>(null)
 
   const productsQuery = useQuery({
     queryKey: ['products'],
     queryFn: fetchProducts,
   })
 
-  const filtersQuery = useQuery({
-    queryKey: ['product-filters'],
-    queryFn: fetchProductFilters,
+  const referencesQuery = useQuery({
+    queryKey: ['product-references'],
+    queryFn: fetchProductReferences,
   })
 
   const deleteMutation = useMutation({
@@ -72,8 +67,8 @@ function ProductsPage() {
         <button
           type="button"
           onClick={() => setShowAddForm((prev) => !prev)}
-          className="rounded-full bg-emerald-600 px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-emerald-500/30 transition hover:bg-emerald-500"
-          disabled={filtersQuery.isLoading}
+          className="rounded-full cursor-pointer bg-emerald-600 px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-emerald-500/30 transition hover:bg-emerald-500"
+          disabled={referencesQuery.isLoading}
         >
           {showAddForm ? 'Close' : 'Add Product'}
         </button>
@@ -82,15 +77,15 @@ function ProductsPage() {
       <AddProduct
         open={showAddForm}
         onClose={() => setShowAddForm(false)}
-        filters={filtersQuery.data}
-        isLoadingFilters={filtersQuery.isLoading}
+        references={referencesQuery.data}
+        isLoadingFilters={referencesQuery.isLoading}
       />
 
       <EditProduct
         product={editingProduct}
         onClose={() => setEditingProduct(null)}
-        filters={filtersQuery.data}
-        isLoadingFilters={filtersQuery.isLoading}
+        references={referencesQuery.data}
+        isLoadingFilters={referencesQuery.isLoading}
       />
 
       <Dialog
@@ -112,7 +107,7 @@ function ProductsPage() {
             <button
               type="button"
               onClick={() => setProductToDelete(null)}
-              className="rounded-full border border-slate-200 px-4 py-2 text-sm font-semibold text-slate-600"
+              className="rounded-full cursor-pointer border border-slate-200 px-4 py-2 text-sm font-semibold text-slate-600"
               disabled={deleteMutation.isPending}
             >
               Cancel
@@ -121,7 +116,7 @@ function ProductsPage() {
               type="button"
               onClick={confirmDelete}
               disabled={deleteMutation.isPending}
-              className="rounded-full bg-red-600 px-4 py-2 text-sm font-semibold text-white disabled:opacity-60"
+              className="rounded-full cursor-pointer bg-red-600 px-4 py-2 text-sm font-semibold text-white disabled:opacity-60"
             >
               {deleteMutation.isPending ? 'Deleting...' : 'Delete'}
             </button>
@@ -159,107 +154,5 @@ function ProductsPage() {
         )}
       </div>
     </section>
-  )
-}
-
-type ProductsTableProps = {
-  products: Awaited<ReturnType<typeof fetchProducts>>
-  onEdit: (product: ProductSummary) => void
-  onDelete: (product: ProductSummary) => void
-  disableActions?: boolean
-}
-
-function ProductsTable({ products, onEdit, onDelete, disableActions }: ProductsTableProps) {
-  return (
-    <div className="overflow-x-auto">
-      <table className="min-w-full divide-y divide-slate-100 text-sm">
-        <thead>
-          <tr className="text-left text-xs font-semibold uppercase tracking-widest text-slate-500">
-            <th className="px-6 py-4">Product</th>
-            <th className="px-6 py-4">SKU</th>
-            <th className="px-6 py-4">Brand</th>
-            <th className="px-6 py-4">Category</th>
-            <th className="px-6 py-4">Segment</th>
-            <th className="px-6 py-4">Style</th>
-            <th className="px-6 py-4 text-right">Wholesale</th>
-            <th className="px-6 py-4 text-right">Actions</th>
-          </tr>
-        </thead>
-        <tbody className="divide-y divide-slate-100">
-          {products.map((product) => (
-            <tr
-              key={product._id}
-              className="hover:bg-emerald-50/30 transition-colors"
-            >
-              <td className="px-6 py-4">
-                <p className="font-medium text-slate-900">{product.title}</p>
-              </td>
-              <td className="px-6 py-4 text-slate-500">{product.skuCode}</td>
-              <td className="px-6 py-4">
-                {product.brand ? (
-                  product.brand.name
-                ) : (
-                  <span className="text-slate-400">—</span>
-                )}
-              </td>
-              <td className="px-6 py-4">
-                <div className="text-slate-900">
-                  {product.category ? (
-                    product.category.name
-                  ) : (
-                    <span className="text-slate-400">—</span>
-                  )}
-                </div>
-                <div className="text-xs text-slate-500">
-                  {product.subCategory ? product.subCategory.name : ''}
-                </div>
-              </td>
-              <td className="px-6 py-4">
-                {product.segment ? (
-                  product.segment.name
-                ) : (
-                  <span className="text-slate-400">—</span>
-                )}
-              </td>
-              <td className="px-6 py-4">
-                {product.style ? (
-                  product.style.name
-                ) : (
-                  <span className="text-slate-400">—</span>
-                )}
-              </td>
-              <td className="px-6 py-4 text-right font-semibold text-slate-900">
-                {new Intl.NumberFormat('en-AU', {
-                  style: 'currency',
-                  currency: 'AUD',
-                  maximumFractionDigits: 2,
-                }).format(product.globalWholesalePrice)}
-              </td>
-              <td className="px-6 py-4 text-right">
-                <div className="flex justify-end gap-2">
-                  <button
-                    type="button"
-                    onClick={() => onEdit(product)}
-                    className="rounded-full border border-slate-200 p-2 text-slate-500 transition hover:border-emerald-200 hover:bg-emerald-50 hover:text-emerald-700"
-                    aria-label={`Edit ${product.title}`}
-                  >
-                    <Pencil size={16} />
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => onDelete(product)}
-                    disabled={disableActions}
-                    className="rounded-full border border-slate-200 p-2 text-slate-500 transition hover:border-red-200 hover:bg-red-50 hover:text-red-600 disabled:cursor-not-allowed"
-                    aria-label={`Delete ${product.title}`}
-                  >
-                    <Trash2 size={16} />
-                  </button>
-                </div>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
   )
 }

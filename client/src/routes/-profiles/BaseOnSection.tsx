@@ -1,7 +1,7 @@
 import type { PricingProfile } from '@/lib/api'
 import type { AdjustmentType, IncrementType } from '@/lib/types'
-import { DropdownSelect } from './DropdownMenu'
-import { RadioGroup } from './RadioGroup'
+import { DropdownSelect } from '../../components/DropdownMenu'
+import { RadioGroup } from '../../components/RadioGroup'
 
 interface BasedOnSectionProps {
   basedOnValue: string | null

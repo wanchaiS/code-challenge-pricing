@@ -1,9 +1,9 @@
 import { DropdownSelect } from '@/components/DropdownMenu'
 import {
-  fetchProductFilters,
+  fetchProductReferences,
   searchProducts,
-  type ProductFilterOptions,
-  type ProductSummary,
+  type ProductReferences,
+  type ProductResponse,
 } from '@/lib/api'
 import { useDebounce } from '@/lib/hooks/useDebounce'
 import type { SelectionType } from '@/lib/types'
@@ -34,7 +34,7 @@ interface SearchProductsProps {
   selectionType: SelectionType
   onSelectionTypeChange: (type: SelectionType) => void
   selectedIds: string[]
-  onToggleProduct: (product: ProductSummary, checked: boolean) => void
+  onToggleProduct: (product: ProductResponse, checked: boolean) => void
   profileName: string
 }
 
@@ -136,15 +136,15 @@ export function SearchProducts({
   )
 
   // ================== Data fetching ==================
-  const filterOptionsQuery = useQuery<ProductFilterOptions>({
-    queryKey: ['product-filters'],
-    queryFn: fetchProductFilters,
+  const filterOptionsQuery = useQuery<ProductReferences>({
+    queryKey: ['product-references'],
+    queryFn: fetchProductReferences,
     staleTime: 5 * 60 * 1000,
   })
 
   const isAllMode = selectionType === 'all'
 
-  const productsQuery = useQuery<ProductSummary[]>({
+  const productsQuery = useQuery<ProductResponse[]>({
     queryKey: ['products', appliedFilters],
     queryFn: () => searchProducts(appliedFilters),
     placeholderData: keepPreviousData,
@@ -218,7 +218,7 @@ export function SearchProducts({
   const filtersLoading = filterOptionsQuery.isLoading
   const selectedSet = new Set(selectedIds)
 
-  const handleToggleProduct = (product: ProductSummary, checked: boolean) => {
+  const handleToggleProduct = (product: ProductResponse, checked: boolean) => {
     if (selectionType === 'all') return
     onToggleProduct(product, checked)
   }

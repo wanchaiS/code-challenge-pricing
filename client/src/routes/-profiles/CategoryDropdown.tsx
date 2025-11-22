@@ -1,4 +1,4 @@
-import type { ReferenceOption, SubCategoryOption } from '@/lib/api'
+import type { ProductReferences } from '@/lib/api'
 import { ChevronDown } from 'lucide-react'
 import {
   DropdownMenu,
@@ -7,12 +7,12 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from './DropdownMenu'
+} from '../../components/DropdownMenu'
 
 interface CategoryDropdownProps {
   loading: boolean
-  categories: ReferenceOption[]
-  subCategories: SubCategoryOption[]
+  categories: ProductReferences['categories']
+  subCategories: ProductReferences['subCategories']
   selectedCategoryId: string
   selectedSubCategoryId: string
   onSelectCategory: (categoryId: string) => void

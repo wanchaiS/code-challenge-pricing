@@ -1,15 +1,15 @@
-import { BasedOnSection } from '@/components/BaseOnSection'
-import { ProfileProductsTable } from '@/components/ProfileProductsTable'
-import { SearchProducts } from '@/components/SearchProducts'
-import { SelectionDialog } from '@/components/ui/SelectionDialog'
+import { SelectionDialog } from '@/components/SelectionDialog'
 import {
   fetchProfileDetail,
   fetchProfiles,
-  type ProductSummary,
+  type ProductResponse,
 } from '@/lib/api'
-import { useProfileDraft } from '@/lib/hooks/useProfileDraft'
 import type { AdjustmentType, IncrementType } from '@/lib/types'
 import { SelectionType } from '@/lib/types'
+import { BasedOnSection } from '@/routes/-profiles/BaseOnSection'
+import { ProfileProductsTable } from '@/routes/-profiles/ProfileProductsTable'
+import { SearchProducts } from '@/routes/-profiles/SearchProducts'
+import { useProfileDraft } from '@/routes/-profiles/useProfileDraft'
 import { useQuery, useSuspenseQuery } from '@tanstack/react-query'
 import { createFileRoute, Link, useRouter } from '@tanstack/react-router'
 import { LoaderCircle } from 'lucide-react'
@@ -198,7 +198,7 @@ function ProfileEditorPage() {
   }
 
   function handleToggleProductFromSearch(
-    product: ProductSummary,
+    product: ProductResponse,
     checked: boolean,
   ) {
     if (draft.selectionType === SelectionType.ALL) return
@@ -360,7 +360,7 @@ function ProfileEditorPage() {
             <button
               type="button"
               onClick={() => router.history.back()}
-              className="rounded-full border border-slate-200 px-5 py-2 text-sm font-semibold text-slate-600"
+              className="rounded-full cursor-pointer border border-slate-200 px-5 py-2 text-sm font-semibold text-slate-600"
             >
               Cancel
             </button>
@@ -368,7 +368,7 @@ function ProfileEditorPage() {
               type="button"
               onClick={handleSave}
               disabled={isSaving}
-              className="relative rounded-full bg-emerald-600 px-5 py-2 text-sm font-semibold text-white disabled:opacity-60"
+              className="relative cursor-pointer rounded-full bg-emerald-600 px-5 py-2 text-sm font-semibold text-white disabled:opacity-60"
               aria-live="polite"
             >
               Save as Draft
@@ -449,7 +449,7 @@ function ProfileEditorPage() {
   )
 }
 
-function mapSummaryProductToDraft(product: ProductSummary) {
+function mapSummaryProductToDraft(product: ProductResponse) {
   return {
     _id: product._id,
     title: product.title,

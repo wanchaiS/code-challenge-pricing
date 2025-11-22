@@ -50,7 +50,7 @@ export function mapProductDto(product: Product, lookups: ProductReferenceLookups
     globalWholesalePrice: product.globalWholesalePrice,
     segment: segment ? { _id: segment._id, name: segment.name } : null,
     skuCode: product.skuCode,
-    subCategory: subCategory ? { _id: subCategory._id, name: subCategory.name } : null,
+    subCategory: subCategory ? { _id: subCategory._id, name: subCategory.name, categoryId: subCategory.categoryId } : null,
     style: style
       ? { _id: style._id, name: style.name, subCategoryId: style.subCategoryId }
       : null,

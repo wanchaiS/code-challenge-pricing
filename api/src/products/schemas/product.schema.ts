@@ -126,11 +126,9 @@ export const categoryDtoSchema = z.object({
 export const subCategoryDtoSchema = z.object({
   _id: z.string().openapi({ example: 'subcategory-1' }),
   name: z.string().openapi({ example: 'Wine' }),
-}).openapi('SubCategory');
-
-export const subCategoryFilterSchema = subCategoryDtoSchema.extend({
   categoryId: z.string().openapi({ example: 'category-1' }),
-}).openapi('SubCategoryFilter');
+
+}).openapi('SubCategory');
 
 /**
  * Segment DTO schema for API responses
@@ -146,11 +144,11 @@ export const styleDtoSchema = z.object({
   subCategoryId: z.string().openapi({ example: 'subcat-1' }),
 }).openapi('Style');
 
-export const productFilterOptionsSchema = z.object({
+export const productReferencesSchema = z.object({
   categories: z.array(categoryDtoSchema).openapi({
     description: 'Available product categories for the current organization',
   }),
-  subCategories: z.array(subCategoryFilterSchema).openapi({
+  subCategories: z.array(subCategoryDtoSchema).openapi({
     description: 'Available subcategories for the current organization',
   }),
   segments: z.array(segmentDtoSchema).openapi({
@@ -162,7 +160,7 @@ export const productFilterOptionsSchema = z.object({
   styles: z.array(styleDtoSchema).openapi({
     description: 'Available styles (wine only). Empty when supplier has no wine.',
   }),
-}).openapi('ProductFilterOptions');
+}).openapi('ProductReferences');
 
 /**
  * Product DTO schema for API responses
@@ -236,11 +234,10 @@ export type ProductDto = z.infer<typeof productDtoSchema>;
 export type BrandDto = z.infer<typeof brandDtoSchema>;
 export type CategoryDto = z.infer<typeof categoryDtoSchema>;
 export type SubCategoryDto = z.infer<typeof subCategoryDtoSchema>;
-export type SubCategoryFilterDto = z.infer<typeof subCategoryFilterSchema>;
 export type SegmentDto = z.infer<typeof segmentDtoSchema>;
 export type StyleDto = z.infer<typeof styleDtoSchema>;
-export type ProductFilterOptionsResponse = z.infer<
-  typeof productFilterOptionsSchema
+export type ProductReferencesDto = z.infer<
+  typeof productReferencesSchema
 >;
 export type SearchField = z.infer<typeof searchFieldSchema>;
 export type ErrorResponse = z.infer<typeof errorSchema>;

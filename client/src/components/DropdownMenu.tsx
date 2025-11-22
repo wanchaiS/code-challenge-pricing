@@ -55,6 +55,7 @@ export function DropdownMenuTrigger(
   return (
     <button
       {...props}
+      // eslint-disable-next-line react-hooks/refs
       ref={ctx.triggerRef}
       type={props.type ?? 'button'}
       onClick={(event) => {
@@ -64,6 +65,7 @@ export function DropdownMenuTrigger(
         }
       }}
       aria-haspopup="menu"
+      // eslint-disable-next-line react-hooks/refs
       aria-expanded={ctx.open}
     />
   )

@@ -5,13 +5,13 @@ import {
   updateProfile,
   type ProfileDetail,
   type ProfileDetailItem,
-} from '../api'
+} from '../../lib/api'
 import {
   SelectionType,
   type AdjustmentType,
   type IncrementType,
   type ProductAdjustment,
-} from '../types'
+} from '../../lib/types'
 
 type ProfileDraftPayload = Omit<ProfileDraft, 'productAdjustments'> & {
   productAdjustments: ProductAdjustment[]

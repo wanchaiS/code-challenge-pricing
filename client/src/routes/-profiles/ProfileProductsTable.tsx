@@ -279,7 +279,10 @@ export function ProfileProductsTable({
                         onStartEditing(item.productId, item.adjustmentValue)
                       }
                       onKeyDown={(event) => {
-                        if (event.key === 'Enter') {
+                        if (
+                          event.key === 'Enter' &&
+                          editingCell?.id !== item.productId
+                        ) {
                           onStartEditing(item.productId, item.adjustmentValue)
                         }
                       }}
