@@ -4,6 +4,10 @@ export interface PricingProfile {
   _id: string
   name: string
   selectionType: SelectionType
+  adjustmentType: 'fixed' | 'dynamic'
+  incrementType: 'increase' | 'decrease'
+  basedOn: string | null
+  adjustmentValueForAll: number | null
   updatedAt: string
   createdAt: string
 }

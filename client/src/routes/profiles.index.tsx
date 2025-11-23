@@ -66,6 +66,12 @@ function ProfilesPage() {
     [profilesQuery.data],
   )
 
+  const getBasedOnName = (basedOnId: string | null) => {
+    const profile = orderedProfiles.find((p) => p._id === basedOnId)
+    return profile ? profile.name : 'None'
+  }
+
+
   return (
     <div className="space-y-8">
       <div className="flex flex-wrap items-center justify-between gap-4">
@@ -246,6 +252,42 @@ function ProfilesPage() {
                   </button>
                 </div>
               </div>
+            <div className="space-y-2">
+                    <div className="flex items-center gap-2 text-sm text-slate-600">
+                      <span className="font-medium">Based on:</span>
+                      <span className="text-emerald-600">
+                          {getBasedOnName(profile.basedOn)}
+                        </span>
+                    </div>
+                    {profile.selectionType === 'all' &&
+                    profile.adjustmentValueForAll !== null ? (
+                      <div className="flex items-center gap-2 text-sm text-slate-600">
+                        <span className="rounded-md bg-emerald-50 px-2.5 py-1 font-mono text-emerald-700">
+                          {profile.incrementType === 'increase' ? '+' : '-'}
+                          {profile.adjustmentValueForAll}
+                          {profile.adjustmentType === 'dynamic' ? '%' : '$'}
+                        </span>
+                        <span className="text-slate-400">•</span>
+                        <span className="capitalize">
+                          {profile.adjustmentType}
+                        </span>
+                        <span className="text-slate-400">•</span>
+                        <span className="capitalize">
+                          {profile.incrementType}
+                        </span>
+                      </div>
+                    ) : (
+                      <div className="text-sm text-slate-600">
+                        <span className="capitalize">
+                          {profile.adjustmentType}
+                        </span>
+                        <span className="text-slate-400"> • </span>
+                        <span className="capitalize">
+                          {profile.incrementType}
+                        </span>
+                      </div>
+                    )}
+                  </div>
               <div className="flex flex-wrap items-center justify-between gap-3 text-sm text-slate-500">
                 <p>
                   Last updated{' '}
