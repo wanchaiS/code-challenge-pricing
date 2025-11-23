@@ -18,8 +18,7 @@
 ### Installation
 
 ```bash
-# Install dependencies for all workspaces
-# from root dir
+# Install dependencies for all workspaces (from root dir)
 npm install
 ```
 
@@ -30,7 +29,8 @@ npm install
 Run the application locally by.
 
 ```bash
-cp api/env.example api/.env (defaults to PORT=3000)
+# Copy env file (defaults to PORT=3000)
+cp api/env.example api/.env 
 
 # Terminal 1 - Start API (port 3000)
 npm run dev:api
@@ -86,7 +86,7 @@ npm run test:e2e:ui
 - Frontend component tests for form validation (product form)
 
 
-## Decision tradeoff
+## Decision tradeoffs & Future work
 
 - **Zod as single source of truth** – One schema drives validation, TS types, and Swagger via `@asteasolutions/zod-to-openapi`. Keeps contracts in sync; couples us to Zod. Frameworks like NestJS often use class-validator, Elysia uses Zod-first—this matches that single-schema pattern.
 
@@ -101,8 +101,6 @@ npm run test:e2e:ui
 - **Based-on cycles prevention** – Backend should reject cyclic profile references; frontend should filter out options that would loop, and a new route for “available base profiles” endpoint to make this explicit.
 
 - **Money math via number** – Prices use JS numbers with `toFixed(2)`; acceptable here but can drift. Production would move to a decimal/money lib.
-
-## Frontend tradeoffs
 
 - **TanStack Router + Query** – there are others 3rd party libs that essentially do the same job but im familia with these ones. Server state lives in TanStack Query; UI state is local. Simple now; cross-page shared state would need a light store (e.g., Zustand) or Context if scope grows.
  
