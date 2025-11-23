@@ -295,12 +295,18 @@ export function calculateNewPrice(
   return Math.max(0, Number(newPrice.toFixed(2)))
 }
 
-/**
- * Get the "based on" price for a product
- * This can be either:
- * - Global wholesale price (if basedOn === null)
- * - Price from another pricing profile (if basedOn is a profile ID)
- */
+  /**
+   * Recursively resolves the "based on" price for a product across a chain of profiles.
+   * 
+   * @param product - The product to price
+   * @param basedOn - Profile ID to base pricing on, or null for global price
+   * @returns The calculated base price after applying all profile adjustments in the chain
+   * 
+   * @example
+   * // Profile A: -10 AUD from global (280 → 270)
+   * // Profile B: -5% from Profile A (270 → 256.50)
+   * getBasedOnPrice(product, "profile-b") // Returns 256.50
+   */
 export function getBasedOnPrice(
   product: Product,
   basedOn: string | null,
@@ -331,8 +337,9 @@ export function getBasedOnPrice(
   // Check if the product is in the base profile
   const productAdjustmentInBase = baseProfile.productAdjustments.find((p => p.productId === product._id));
   if (!productAdjustmentInBase) {
-    // If product not in base profile, use global price
-    return product.globalWholesalePrice
+    // If product not in base profile, inherit the already-computed base price
+    // rather than dropping to global, so adjustments cascade through the chain.
+    return baseBasedOnPrice
   }
 
   // Recursively calculate the price from the base profile
