@@ -1,8 +1,11 @@
+# Pricing Management System
+
+A full-stack pricing management application with profile chaining, preview capabilities, and inline editing.
 
 ## Tech Stack
 
 - **Backend:** Express.js 5, TypeScript, Swagger/OpenAPI
-- **DB:** In-memory objects
+- **Database:** In-memory objects
 - **Frontend:** React 19, Vite, TanStack Router, TanStack Query, Tailwind CSS
 - **Testing:** Vitest (unit), Playwright (e2e)
 
@@ -24,13 +27,13 @@ npm install
 
 ---
 
-## Development Mode
+## Development
 
-Run the application locally by.
+Run the application locally:
 
 ```bash
 # Copy env file (defaults to PORT=3000)
-cp api/env.example api/.env 
+cp api/env.example api/.env
 
 # Terminal 1 - Start API (port 3000)
 npm run dev:api
@@ -39,10 +42,11 @@ npm run dev:api
 npm run dev:client
 ```
 
-**Access the application:**
-- Frontend: http://localhost:3001
-- API: http://localhost:3000
-- API Documentation: http://localhost:3000/api-docs
+### Access Points
+
+- **Frontend:** http://localhost:3001
+- **API:** http://localhost:3000
+- **API Documentation:** http://localhost:3000/api-docs
 
 ---
 
@@ -62,48 +66,73 @@ npm run test:e2e
 npm run test:e2e:ui
 ```
 
-### Features worth mentioning
+## Key Features
 
-**1. Profile Chaining (Based-On Cascading)**
-- Create pricing profiles based on other profiles for layered discounts
-- Example: VIP Profile (-10%) → Tenure Discount (-5%) → Global Price
+### 1. Profile Chaining (Based-On Cascading)
+Create pricing profiles based on other profiles for layered discounts.
+- **Example:** VIP Profile (-10%) → Tenure Discount (-5%) → Global Price
 - Recursive calculation walks the entire chain to compute final prices
 
-**2. Preview Before Save**
-- Dedicated `/preview` endpoint calculates prices without persisting changes
+### 2. Preview Before Save
+Calculate prices without persisting changes.
+- Dedicated `/preview` endpoint for non-destructive price calculations
 - "Refresh" indicator shows when preview is stale after draft changes
 
-**3. Profile Name Uniqueness**
-- Enforces unique profile names within each organization
+### 3. Profile Name Uniqueness
+Enforces unique profile names within each organization to prevent conflicts.
 
-**4. Inline Table Editing**
+### 4. Inline Table Editing
+Efficient data entry with keyboard-first navigation.
 - Double-click adjustment cells to edit values in place
-- Keyboard navigation (Enter to save, Escape to cancel)
+- Keyboard shortcuts: Enter to save, Escape to cancel
 
-**9. Testing**
-- Unit tests for pricing calculation formulas
-- E2E tests covering a basic happy path for profile creation
-- Frontend component tests for form validation (product form)
+### 5. Comprehensive Testing
+- **Unit tests:** Pricing calculation formulas
+- **E2E tests:** Happy path for profile creation (Playwright)
+- **Component tests:** Form validation (Vitest)
 
 
-## Decision tradeoffs & Future work
+## Architecture Decisions & Tradeoffs
 
-- **Zod as single source of truth** – One schema drives validation, TS types, and Swagger via `@asteasolutions/zod-to-openapi`. Keeps contracts in sync; couples us to Zod. Frameworks like NestJS often use class-validator, Elysia uses Zod-first—this matches that single-schema pattern.
+### Schema & Validation
+**Zod as single source of truth**
+- One schema drives validation, TypeScript types, and Swagger via `@asteasolutions/zod-to-openapi`
+- **Benefit:** Keeps contracts in sync across the stack
+- **Tradeoff:** Couples the system to Zod (similar to NestJS class-validator or Elysia's Zod-first approach)
 
-- **Functional module pattern** – Express routes/services/repositories are plain functions, no DI container. Lightweight for the challenge; at scale we’d lean on DI/lifecycle (e.g., NestJS modules/providers or Elysia plugins) for scoping, testing, and cross-cutting concerns.
+### Backend Architecture
+**Functional module pattern**
+- Express routes/services/repositories are plain functions without a DI container
+- **Benefit:** Lightweight and simple for this challenge
+- **Future:** At scale, would benefit from DI/lifecycle management (e.g., NestJS modules or Elysia plugins) for scoping, testing, and cross-cutting concerns
 
-- **Custom draft state management** – A bespoke `useProfileDraft` hook handles dirty state, preview, and saves instead of a form lib. Precise control for this flow, but more wiring than common form libraries; larger forms would move to React Hook Form to match ecosystem norms.
+### Frontend State Management
+**Custom draft state (`useProfileDraft` hook)**
+- Handles dirty state, preview, and saves without a form library
+- **Benefit:** Precise control for this specific workflow
+- **Tradeoff:** More manual wiring than React Hook Form; larger forms would justify a full form library
 
-- **Three-layer testing strategy** – Unit + Playwright E2E, minimal integration tests. Fast feedback but contract gaps can slip; frameworks like Nest make API integration tests easy via TestingModule—production would add those.
+**TanStack Router + Query**
+- Server state in TanStack Query built-in cache; UI state is local
+- **Future:** Cross-page shared state would need Zustand or Context as the app grows
 
-- **Fuzzy search** – Fuse.js over filtered arrays, no pagination. Fine for small in-memory datasets; production would use DB/search index (MongoDB Atlas Search/PG trigram) with pagination.
+### Testing Strategy
+**Three-layer approach (Unit + E2E)**
+- Unit tests for business logic, Playwright for end-to-end flows
+- **Benefit:** Fast feedback loops
+- **Future:** Add integration tests (e.g., NestJS TestingModule style) to catch contract gaps
 
-- **Based-on cycles prevention** – Backend should reject cyclic profile references; frontend should filter out options that would loop, and a new route for “available base profiles” endpoint to make this explicit.
+### Search & Data Handling
+**Fuzzy search with Fuse.js**
+- Client-side search over filtered arrays, no pagination
+- **Suitable for:** Small in-memory datasets
+- **Future:** DB/search index (MongoDB Atlas Search, PostgreSQL trigram) with pagination
 
-- **Money math via number** – Prices use JS numbers with `toFixed(2)`; acceptable here but can drift. Production would move to a decimal/money lib.
+**Money calculations using JavaScript numbers**
+- Uses `toFixed(2)` for price formatting
+- **Suitable for:** This prototype
+- **Future:** Use a decimal/money library (e.g., Dinero.js) to avoid floating-point drift
 
-- **TanStack Router + Query** – there are others 3rd party libs that essentially do the same job but im familia with these ones. Server state lives in TanStack Query; UI state is local. Simple now; cross-page shared state would need a light store (e.g., Zustand) or Context if scope grows.
- 
-- **Custom draft state, no form lib** – `useProfileDraft` handles dirty/preview/save manually. Precise control, but more wiring than a form library;
-
-- **Search UX for small datasets** – Debounced Fuse-backed search, no pagination (`SearchProducts`). Fine for the challenge; production would add paging/infinite scroll and result counts.
+### Known Limitations & Future Work
+- **Cycle prevention:** Backend should reject cyclic profile references; frontend should filter invalid "based-on" options and add a dedicated endpoint for available base profiles
+- **Search UX:** Debounced Fuse-backed search without pagination is fine for small datasets; production would add infinite scroll and result counts
