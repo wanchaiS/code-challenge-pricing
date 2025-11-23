@@ -1,14 +1,14 @@
 {
-  "name": "basic-node-crud",
+  "name": "pricing-api",
   "version": "1.0.0",
   "description": "node crud app show case",
-  "homepage": "https://github.com/wanchaiS/basic-node-crud#readme",
+  "homepage": "https://github.com/wanchaiS/pricing-api#readme",
   "bugs": {
-    "url": "https://github.com/wanchaiS/basic-node-crud/issues"
+    "url": "https://github.com/wanchaiS/pricing-api/issues"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/wanchaiS/basic-node-crud.git"
+    "url": "git+https://github.com/wanchaiS/pricing-api.git"
   },
   "license": "ISC",
   "author": "wanchaiS",
