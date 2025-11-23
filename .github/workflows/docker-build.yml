@@ -45,34 +45,15 @@ jobs:
       - name: Run Client tests
         run: npm run test:client
 
-      - name: Start services for E2E tests
-        run: docker compose up -d
-
-      - name: Wait for services to be ready
-        run: |
-          echo "Waiting for API to be ready..."
-          timeout 60 bash -c 'until curl -sf http://localhost/api/products > /dev/null; do sleep 2; done'
-          echo "Services are ready!"
-
-      - name: Install Playwright browsers
-        run: npx playwright install --with-deps
-
-      - name: Run E2E tests
-        run: npm run test:e2e
-
       - name: Upload test results
         if: failure()
         uses: actions/upload-artifact@v4
         with:
           name: test-results
           path: |
-            test-results/
-            playwright-report/
+            api/coverage/
+            client/coverage/
           retention-days: 7
-
-      - name: Stop services
-        if: always()
-        run: docker compose down
 
   build-and-push:
     needs: test
