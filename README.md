@@ -15,7 +15,7 @@ A full-stack pricing management application with profile chaining, preview capab
 
 ### Prerequisites
 
-- Node.js >= 18.18.0
+- Node.js >= 20
 - npm >= 9.0.0
 
 ### Installation
