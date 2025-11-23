@@ -1,3 +1,4 @@
+import { randomUUID } from "crypto";
 import { db } from '#shared/store.js';
 import { AdjustmentType, IncrementType } from '#shared/types.js';
 import type { CreatePricingProfileInput, PricingProfile, UpdatePricingProfileInput } from '../models/profile.model.js';
@@ -31,7 +32,7 @@ export const profileRepository = {
   create(orgId: string, dto: CreatePricingProfileInput): PricingProfile {
     const now = new Date()
     const profile: PricingProfile = {
-      _id: `profile-${Date.now()}-${Math.random().toString(36).slice(2, 9)}`,
+      _id: randomUUID(),
       adjustmentType: AdjustmentType.DYNAMIC,
       basedOn: null,
       createdAt: now,

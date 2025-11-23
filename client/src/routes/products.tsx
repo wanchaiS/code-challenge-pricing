@@ -44,9 +44,9 @@ function ProductsPage() {
     },
   })
 
-  async function confirmDelete() {
+  function confirmDelete() {
     if (!productToDelete) return
-    await deleteMutation.mutateAsync(productToDelete._id)
+    deleteMutation.mutate(productToDelete._id)
     setProductToDelete(null)
   }
 
@@ -125,6 +125,18 @@ function ProductsPage() {
       </Dialog>
 
       <div className="rounded-2xl border border-slate-200 bg-white shadow-sm">
+        {deleteMutation.error && (
+          <div
+            role="alert"
+            className="border-b border-red-200 bg-red-50 px-6 py-3 text-sm text-red-700"
+          >
+            Unable to delete:{' '}
+            {deleteMutation.error instanceof Error &&
+            deleteMutation.error.message
+              ? deleteMutation.error.message
+              : 'Something went wrong'}
+          </div>
+        )}
         {productsQuery.isLoading ? (
           <div className="space-y-3 p-6">
             {Array.from({ length: 4 }).map((_, idx) => (

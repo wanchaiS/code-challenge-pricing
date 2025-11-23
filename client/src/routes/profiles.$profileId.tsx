@@ -60,6 +60,8 @@ function ProfileEditorPage() {
     saveProfileDraft,
     isPreviewing,
     isSaving,
+    saveError,
+    previewError,
   } = useProfileDraft(profileId, detailQuery.data)
 
   const [selectedRowIds, setSelectedRowIds] = useState<string[]>([])
@@ -100,6 +102,8 @@ function ProfileEditorPage() {
   const basedOnSummary = basedOnProfile
     ? `The adjusted price will be calculated from "${basedOnProfile.name}" or global price if product is not found in the base profile.`
     : 'No profile selected — The adjusted price will be calculated from the global price.'
+
+  const requestError = saveError ?? previewError
 
   const pendingSelectionLabel = pendingSelectionType
     ? selectionTypeLabels[pendingSelectionType as SelectionValue]
@@ -332,13 +336,13 @@ function ProfileEditorPage() {
     }
   }
 
-  async function handlePreview() {
+  function handlePreview() {
     if (!canPreview) return
-    await previewProfileDraft()
+    previewProfileDraft()
   }
 
-  async function handleSave() {
-    await saveProfileDraft()
+  function handleSave() {
+    saveProfileDraft()
   }
 
   return (
@@ -385,6 +389,18 @@ function ProfileEditorPage() {
             </button>
           </div>
         </div>
+
+        {requestError && (
+          <div
+            role="alert"
+            className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700"
+          >
+            {saveError ? 'Unable to save draft: ' : 'Unable to preview: '}
+            {requestError instanceof Error && requestError.message
+              ? requestError.message
+              : 'Something went wrong'}
+          </div>
+        )}
 
         <section className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
           <h3 className="text-base font-semibold text-slate-900">

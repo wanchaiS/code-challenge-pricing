@@ -115,28 +115,28 @@ export function useProfileDraft(profileId: string, detail: ProfileDetail) {
     [draft.productAdjustments],
   )
 
-  const markPreviewDirty = useCallback(() => {
+  const markPreviewDirty = () => {
     setNeedsPreviewRefresh(true)
-  }, [])
+  }
 
-  const clearPreviewEntries = useCallback((ids: string[]) => {
+  const clearPreviewEntries = (ids: string[]) => {
     if (!ids.length) return
     setPreviewMap((prev) => {
       const next = new Map(prev)
       ids.forEach((id) => next.delete(id))
       return next
     })
-  }, [])
+  }
 
   const buildPayload = useCallback(() => buildRequestPayload(draft), [draft])
 
-  const previewProfileDraft = useCallback(async () => {
+  const previewProfileDraft = useCallback(() => {
     if (!canPreview) return
-    await previewMutation.mutateAsync(buildPayload())
+    previewMutation.mutate(buildPayload())
   }, [canPreview, previewMutation, buildPayload])
 
-  const saveProfileDraft = useCallback(async () => {
-    await saveMutation.mutateAsync(buildPayload())
+  const saveProfileDraft = useCallback(() => {
+    saveMutation.mutate(buildPayload())
   }, [saveMutation, buildPayload])
 
   const initialPayloadSignature = useMemo(
@@ -164,6 +164,8 @@ export function useProfileDraft(profileId: string, detail: ProfileDetail) {
     saveProfileDraft,
     isPreviewing: previewMutation.isPending,
     isSaving: saveMutation.isPending,
+    previewError: previewMutation.error as Error | null,
+    saveError: saveMutation.error as Error | null,
   }
 }
 
