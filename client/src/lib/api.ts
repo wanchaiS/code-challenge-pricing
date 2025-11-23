@@ -125,6 +125,12 @@ export function previewProfile(id: string, payload: unknown) {
   )
 }
 
+export function deleteProfile(id: string) {
+  return request<void>(`/api/pricing-profiles/${id}`, {
+    method: 'DELETE',
+  })
+}
+
 export interface ProductSearchParams {
   search?: string
   searchField?: 'title' | 'skuCode'
@@ -186,4 +192,10 @@ export function searchProducts(params: ProductSearchParams) {
     ? `/api/products/search?${queryString}`
     : '/api/products/search'
   return request<ProductResponse[]>(url)
+}
+
+export function resetDatabase() {
+  return request<void>('/api/test/reset', {
+    method: 'POST',
+  })
 }

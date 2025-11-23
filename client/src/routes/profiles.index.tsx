@@ -1,4 +1,4 @@
-import { createProfile, fetchProfiles } from '@/lib/api'
+import { createProfile, deleteProfile, fetchProfiles } from '@/lib/api'
 import { SelectionType } from '@/lib/types'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { createFileRoute, Link } from '@tanstack/react-router'
@@ -14,6 +14,10 @@ function ProfilesPage() {
   const [selectionType, setSelectionType] = useState<SelectionType>(
     SelectionType.MULTIPLE,
   )
+  const [profileToDelete, setProfileToDelete] = useState<{
+    id: string
+    name: string
+  } | null>(null)
   const queryClient = useQueryClient()
 
   const profilesQuery = useQuery({
@@ -31,6 +35,14 @@ function ProfilesPage() {
     },
   })
 
+  const deleteMutation = useMutation({
+    mutationFn: deleteProfile,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['profiles'] })
+      setProfileToDelete(null)
+    },
+  })
+
   async function handleCreate(e: React.FormEvent) {
     e.preventDefault()
     if (!profileName.trim()) return
@@ -38,6 +50,11 @@ function ProfilesPage() {
       name: profileName.trim(),
       selectionType,
     })
+  }
+
+  async function handleDelete() {
+    if (!profileToDelete) return
+    await deleteMutation.mutateAsync(profileToDelete.id)
   }
 
   const orderedProfiles = useMemo(
@@ -194,13 +211,40 @@ function ProfilesPage() {
                     {profile.name}
                   </h3>
                 </div>
-                <span className="rounded-full bg-slate-100 px-4 py-1 text-xs font-semibold uppercase tracking-wide text-slate-600">
-                  {profile.selectionType === 'all'
-                    ? 'All products'
-                    : profile.selectionType === 'multiple'
-                      ? 'Multiple products'
-                      : 'Single product'}
-                </span>
+                <div className="flex items-center gap-2">
+                  <span className="rounded-full bg-slate-100 px-4 py-1 text-xs font-semibold uppercase tracking-wide text-slate-600">
+                    {profile.selectionType === 'all'
+                      ? 'All products'
+                      : profile.selectionType === 'multiple'
+                        ? 'Multiple products'
+                        : 'Single product'}
+                  </span>
+                  <button
+                    type="button"
+                    onClick={() =>
+                      setProfileToDelete({
+                        id: profile._id,
+                        name: profile.name,
+                      })
+                    }
+                    data-testid="delete-profile-button"
+                    className="rounded-lg p-2 cursor-pointer text-slate-400 transition hover:bg-red-50 hover:text-red-600"
+                    title="Delete profile"
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      className="h-5 w-5"
+                      viewBox="0 0 20 20"
+                      fill="currentColor"
+                    >
+                      <path
+                        fillRule="evenodd"
+                        d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z"
+                        clipRule="evenodd"
+                      />
+                    </svg>
+                  </button>
+                </div>
               </div>
               <div className="flex flex-wrap items-center justify-between gap-3 text-sm text-slate-500">
                 <p>
@@ -224,11 +268,55 @@ function ProfilesPage() {
           ))}
           {!orderedProfiles.length && (
             <div className="rounded-2xl border border-dashed border-slate-200 bg-white px-6 py-12 text-center text-slate-500">
-              No pricing profiles yet. Click “New Pricing Profile” to get
+              No pricing profiles yet. Click "New Pricing Profile" to get
               started.
             </div>
           )}
         </section>
+      )}
+
+      {profileToDelete && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
+          <div
+            className="w-full max-w-md rounded-2xl border border-slate-200 bg-white p-6 shadow-2xl"
+            data-testid="delete-confirmation-dialog"
+          >
+            <h3 className="text-lg font-semibold text-slate-900">
+              Delete Profile
+            </h3>
+            <p className="mt-2 text-sm text-slate-600">
+              Are you sure you want to delete{' '}
+              <span className="font-semibold">{profileToDelete.name}</span>?
+            </p>
+            {deleteMutation.error && (
+              <div className="mt-3 rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700">
+                {deleteMutation.error instanceof Error
+                  ? deleteMutation.error.message
+                  : 'Failed to delete profile'}
+              </div>
+            )}
+            <div className="mt-6 flex gap-3">
+              <button
+                type="button"
+                onClick={() => setProfileToDelete(null)}
+                disabled={deleteMutation.isPending}
+                data-testid="cancel-delete-button"
+                className="flex-1 rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm font-semibold text-slate-700 transition hover:bg-slate-50 disabled:opacity-60"
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                onClick={handleDelete}
+                disabled={deleteMutation.isPending}
+                data-testid="confirm-delete-button"
+                className="flex-1 rounded-xl bg-red-600 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-red-500 disabled:opacity-60"
+              >
+                {deleteMutation.isPending ? 'Deleting...' : 'Delete'}
+              </button>
+            </div>
+          </div>
+        </div>
       )}
     </div>
   )

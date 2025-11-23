@@ -29,13 +29,11 @@ const swaggerSpec = generateSwaggerSpec();
 // API Documentation
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
-// Test-only route to reset in-memory DB
-if (process.env["NODE_ENV"] === "test") {
-  app.post("/api/test/reset", (_, res) => {
-    resetDb();
-    res.status(204).send();
-  });
-}
+// Route to reset in-memory DB (for demo purposes)
+app.post("/api/test/reset", (_, res) => {
+  resetDb();
+  res.status(204).send();
+});
 
 // Error handling (must be last)
 app.use(errorHandler);

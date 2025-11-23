@@ -74,6 +74,7 @@ npm run test:e2e:ui
 Create pricing profiles based on other profiles for layered discounts.
 - **Example:** VIP Profile (-10%) → Tenure Discount (-5%) → Global Price
 - Recursive calculation walks the entire chain to compute final prices
+-  When a base profile is deleted, dependent profiles are automatically reassigned to the next level in the chain (or null if none exists)
 
 ### 2. Preview Before Save
 Calculate prices without persisting changes.

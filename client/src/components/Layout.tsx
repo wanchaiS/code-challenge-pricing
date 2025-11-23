@@ -2,11 +2,12 @@ import { Link } from '@tanstack/react-router'
 import {
   Bell,
   ClipboardList,
-  HelpCircle,
   Package,
+  RefreshCw,
   type LucideIcon,
 } from 'lucide-react'
 import type { PropsWithChildren } from 'react'
+import { resetDatabase } from '../lib/api'
 
 const mockUser = {
   name: 'Peter Wanchai',
@@ -129,10 +130,25 @@ export function Layout({ children }: PropsWithChildren) {
                   </button>
                   <button
                     type="button"
+                    onClick={async () => {
+                      if (
+                        confirm(
+                          'Reset database? This will restore all data to initial state.',
+                        )
+                      ) {
+                        try {
+                          await resetDatabase()
+                          window.location.reload()
+                        } catch (error) {
+                          alert('Failed to reset database')
+                          console.error(error)
+                        }
+                      }
+                    }}
                     className="rounded-full border border-white/30 p-2 text-white transition hover:bg-white/10"
-                    aria-label="Help"
+                    aria-label="Reset Database"
                   >
-                    <HelpCircle size={18} />
+                    <RefreshCw size={18} />
                   </button>
                   <div className="hidden items-center gap-3 rounded-full bg-white/10 px-4 py-2 md:flex">
                     <div className="text-right">

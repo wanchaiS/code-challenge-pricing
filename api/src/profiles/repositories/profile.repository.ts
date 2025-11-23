@@ -19,11 +19,36 @@ export const profileRepository = {
   },
 
   /**
-   * 
+   *
   * Find a single pricing profile by name and orgId
    */
   findByNameAndOrgId(name: string, orgId: string): PricingProfile | undefined {
     return db.pricingProfiles.find((p) => p.name === name && p.orgId === orgId)
+  },
+
+  /**
+   * Find all pricing profiles that are based on a specific profile
+   */
+  findByBasedOn(basedOnId: string, orgId: string): PricingProfile[] {
+    return db.pricingProfiles.filter((p) => p.basedOn === basedOnId && p.orgId === orgId)
+  },
+
+  /**
+   * Update the basedOn field for a specific profile
+   */
+  updateBasedOn(profileId: string, newBasedOn: string | null): boolean {
+    const index = db.pricingProfiles.findIndex((p) => p._id === profileId)
+    if (index === -1) {
+      return false
+    }
+
+    db.pricingProfiles[index] = {
+      ...db.pricingProfiles[index]!,
+      basedOn: newBasedOn,
+      updatedAt: new Date(),
+    }
+
+    return true
   },
 
   /**

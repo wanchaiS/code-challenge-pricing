@@ -105,7 +105,18 @@ export function updatePricingProfile(
 }
 
 export function deletePricingProfile(id: string): void {
-  getPricingProfile(id);
+  const profile = getPricingProfile(id);
+  const user = getCurrentUser();
+
+  // Find all profiles that are based on this profile
+  const dependentProfiles = profileRepository.findByBasedOn(id, user.orgId);
+
+  // Update dependent profiles to use the deleted profile's basedOn value
+  for (const dependentProfile of dependentProfiles) {
+    profileRepository.updateBasedOn(dependentProfile._id, profile.basedOn);
+  }
+
+  // Delete the profile
   const deleted = profileRepository.delete(id);
   if (!deleted) {
     throw notFound("Pricing profile");
