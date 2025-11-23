@@ -66,6 +66,8 @@ npm run test:e2e
 npm run test:e2e:ui
 ```
 
+---
+
 ## Key Features
 
 ### 1. Profile Chaining (Based-On Cascading)

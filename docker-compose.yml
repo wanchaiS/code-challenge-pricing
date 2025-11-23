@@ -1,0 +1,55 @@
+services:
+  api:
+    image: ${API_IMAGE:-code-challenge-pricing-api}
+    build:
+      context: ./api
+      dockerfile: Dockerfile
+    container_name: pricing-api
+    restart: unless-stopped
+    environment:
+      - NODE_ENV=production
+      - PORT=3000
+    expose:
+      - "3000"
+    networks:
+      - pricing-network
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:3000/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  client:
+    image: ${CLIENT_IMAGE:-code-challenge-pricing-client}
+    build:
+      context: ./client
+      dockerfile: Dockerfile
+    container_name: pricing-client-build
+    command: echo "Client build complete"
+    volumes:
+      - client-dist:/app/dist
+
+  nginx:
+    image: ${NGINX_IMAGE:-code-challenge-pricing-nginx}
+    build:
+      context: ./nginx
+      dockerfile: Dockerfile
+    container_name: pricing-nginx
+    restart: unless-stopped
+    ports:
+      - "80:80"
+    volumes:
+      - client-dist:/usr/share/nginx/html:ro
+    networks:
+      - pricing-network
+    depends_on:
+      - api
+      - client
+
+networks:
+  pricing-network:
+    driver: bridge
+
+volumes:
+  client-dist:
