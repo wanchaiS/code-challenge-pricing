@@ -1,0 +1,29 @@
+{
+  "name": "code-challenge-pricing",
+  "private": true,
+  "workspaces": [
+    "api",
+    "client"
+  ],
+  "scripts": {
+    "dev:api": "npm --workspace api run dev",
+    "dev:client": "npm --workspace client run dev",
+    "start:api": "npm --workspace api run start",
+    "start:client": "npm --workspace client run serve -- --host --port 3001 --strictPort",
+    "build:api": "npm --workspace api run build",
+    "build:client": "npm --workspace client run build",
+    "test:api": "npm --workspace api run test",
+    "test:client": "npm --workspace client run test",
+    "test:e2e": "playwright test --config ./playwright.config.cjs",
+    "test:e2e:ui": "playwright test --ui --config ./playwright.config.cjs",
+    "docker:build": "docker-compose build",
+    "docker:up": "docker-compose up -d",
+    "docker:down": "docker-compose down",
+    "docker:logs": "docker-compose logs -f",
+    "docker:ps": "docker-compose ps",
+    "docker:restart": "docker-compose restart"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.49.0"
+  }
+}

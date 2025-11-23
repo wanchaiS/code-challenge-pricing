@@ -18,6 +18,14 @@ export const profileRepository = {
   },
 
   /**
+   * 
+  * Find a single pricing profile by name and orgId
+   */
+  findByNameAndOrgId(name: string, orgId: string): PricingProfile | undefined {
+    return db.pricingProfiles.find((p) => p.name === name && p.orgId === orgId)
+  },
+
+  /**
    * Create a new pricing profile
    */
   create(orgId: string, dto: CreatePricingProfileInput): PricingProfile {

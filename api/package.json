@@ -14,10 +14,13 @@
   "author": "wanchaiS",
   "type": "module",
   "imports": {
-    "#*": "./src/*"
+    "#*": {
+      "development": "./src/*",
+      "default": "./dist/*"
+    }
   },
   "scripts": {
-    "dev": "tsx --watch --env-file .env src/index.ts",
+    "dev": "NODE_OPTIONS='--conditions=development' tsx --watch --env-file .env src/index.ts",
     "start": "node --env-file .env dist/index.js",
     "build": "tsc",
     "type-check": "tsc --noEmit",

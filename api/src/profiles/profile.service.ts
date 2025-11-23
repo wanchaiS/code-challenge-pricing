@@ -48,6 +48,11 @@ export function getPricingProfileDetail(id: string): PricingProfileDetail {
 
 export function createPricingProfile(name: string, selectionType: SelectionType): PricingProfile {
   const user = getCurrentUser();
+  // check name uniqueness within org
+  const existing = profileRepository.findByNameAndOrgId(name, user.orgId);
+  if (existing) {
+    throw new ApiError(400, "Pricing profile name must be unique", INVALID_PROFILE_CODE);
+  }
   return profileRepository.create(user.orgId, { name, selectionType });
 }
 

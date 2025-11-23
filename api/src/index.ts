@@ -1,10 +1,11 @@
-import { corsOptions } from "#middleware/cors.js";
+import { corsOptions } from "./middleware/cors.js";
 import express from "express";
 import swaggerUi from "swagger-ui-express";
 import { generateSwaggerSpec } from "./config/swagger.js";
 import { errorHandler } from "./middleware/errorHandler.js";
 import productRoutes from "./products/product.routes.js";
 import profileRoutes from "./profiles/profile.routes.js";
+import { resetDb } from "./shared/store.js";
 
 const app = express();
 const port = process.env["PORT"] ?? "9001";
@@ -27,6 +28,14 @@ const swaggerSpec = generateSwaggerSpec();
 
 // API Documentation
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+
+// Test-only route to reset in-memory DB
+if (process.env["NODE_ENV"] === "test") {
+  app.post("/api/test/reset", (_, res) => {
+    resetDb();
+    res.status(204).send();
+  });
+}
 
 // Error handling (must be last)
 app.use(errorHandler);

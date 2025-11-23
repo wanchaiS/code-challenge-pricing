@@ -256,6 +256,7 @@ export function SearchProducts({
                   name="selection-type"
                   className="sr-only"
                   value={type}
+                  data-testid={`selection-type-${type}`}
                   checked={selectionType === type}
                   onChange={() => onSelectionTypeChange(type)}
                 />
@@ -453,6 +454,7 @@ export function SearchProducts({
                 return (
                   <label
                     key={product._id}
+                    data-testid={`product-option-${product._id}`}
                     className={`flex cursor-pointer items-center gap-3 rounded-2xl bg-white p-4 shadow-sm ring-1 ring-slate-100 transition ${checked ? 'ring-emerald-200' : ''}`}
                   >
                     <input

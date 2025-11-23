@@ -6,6 +6,7 @@
 # Dependencies
 /api/node_modules
 /client/node_modules
+/node_modules
 
 # TypeScript build output
 /api/dist
@@ -17,6 +18,7 @@
 # Test coverage
 /api/coverage
 /client/coverage
+/test-results
 
 # Frontend env files
 /client/.env

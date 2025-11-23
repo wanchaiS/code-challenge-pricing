@@ -63,6 +63,7 @@ function ProfilesPage() {
         <button
           type="button"
           onClick={() => setShowAddForm((prev) => !prev)}
+          data-testid="new-profile-button"
           className="rounded-full cursor-pointer bg-emerald-600 px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-emerald-500/30 transition hover:bg-emerald-500"
         >
           {showAddForm ? 'Close' : 'New Pricing Profile'}
@@ -94,6 +95,7 @@ function ProfilesPage() {
                             className="sr-only"
                             name="selection-type"
                             value={type}
+                            data-testid={`selection-type-${type}`}
                             checked={selectionType === type}
                             onChange={() => setSelectionType(type)}
                           />
@@ -134,6 +136,7 @@ function ProfilesPage() {
                 <input
                   id="profile-name"
                   type="text"
+                  data-testid="profile-name-input"
                   value={profileName}
                   onChange={(e) => setProfileName(e.target.value)}
                   placeholder="e.g. Hospitality Partners Q1"
@@ -146,6 +149,7 @@ function ProfilesPage() {
               <button
                 type="submit"
                 disabled={createMutation.isPending}
+                data-testid="create-profile-submit"
                 className="w-full rounded-2xl bg-emerald-600 px-6 py-4 text-base font-semibold text-white shadow-lg shadow-emerald-500/30 transition hover:bg-emerald-500 disabled:opacity-60 lg:w-auto"
               >
                 {createMutation.isPending ? 'Saving...' : 'Create profile'}
@@ -177,6 +181,8 @@ function ProfilesPage() {
           {orderedProfiles.map((profile) => (
             <article
               key={profile._id}
+              data-testid="profile-card"
+              data-profile-id={profile._id}
               className="flex flex-col gap-4 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm transition hover:border-emerald-400/50"
             >
               <div className="flex flex-wrap items-center justify-between gap-3">
@@ -208,6 +214,7 @@ function ProfilesPage() {
                 <Link
                   to="/profiles/$profileId"
                   params={{ profileId: profile._id }}
+                  data-testid="profile-setup-link"
                   className="text-sm font-semibold text-emerald-600 underline underline-offset-4 hover:text-emerald-500"
                 >
                   Setup &rarr;

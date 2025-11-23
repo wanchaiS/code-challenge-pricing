@@ -1,8 +1,8 @@
-import { beforeEach, describe, expect, it } from "vitest";
-import { calculateNewPrice, getBasedOnPrice } from "../profile.service.js";
-import { AdjustmentType, IncrementType, SelectionType } from "../../shared/types.js";
-import { db, resetDb } from "../../shared/store.js";
 import type { Product } from "#products/models/product.model.js";
+import { beforeEach, describe, expect, it } from "vitest";
+import { db, resetDb } from "../../shared/store.js";
+import { AdjustmentType, IncrementType, SelectionType } from "../../shared/types.js";
+import { calculateNewPrice, getBasedOnPrice } from "../profile.service.js";
 
 describe("pricing calculations", () => {
   beforeEach(() => {
@@ -51,6 +51,7 @@ describe("pricing calculations", () => {
       5,
       IncrementType.DECREASE,
     );
+
     expect(price).toBe(expectedAfterChild);
   });
 });

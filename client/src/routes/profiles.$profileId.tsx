@@ -368,6 +368,7 @@ function ProfileEditorPage() {
               type="button"
               onClick={handleSave}
               disabled={isSaving}
+              data-testid="save-draft-button"
               className="relative cursor-pointer rounded-full bg-emerald-600 px-5 py-2 text-sm font-semibold text-white disabled:opacity-60"
               aria-live="polite"
             >

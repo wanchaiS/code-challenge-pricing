@@ -145,6 +145,7 @@ export function ProfileProductsTable({
           <div className="mt-2 flex items-center gap-3">
             <input
               type="number"
+              data-testid="adjustment-all-input"
               value={adjustmentValueForAll ?? ''}
               onChange={(event) => {
                 const raw = event.target.value
@@ -182,6 +183,7 @@ export function ProfileProductsTable({
             type="button"
             onClick={onRefresh}
             disabled={refreshing || !canRefresh}
+            data-testid="refresh-preview-button"
             className="relative cursor-pointer inline-flex items-center gap-2 text-sm font-semibold text-emerald-600 disabled:opacity-60"
           >
             {refreshing ? 'Refreshing…' : 'Refresh New Price Table'}
@@ -275,6 +277,7 @@ export function ProfileProductsTable({
                       role="button"
                       tabIndex={0}
                       className="w-40 p-0"
+                      data-testid={`adjustment-cell-${item.productId}`}
                       onDoubleClick={() =>
                         onStartEditing(item.productId, item.adjustmentValue)
                       }
@@ -286,9 +289,9 @@ export function ProfileProductsTable({
                           onStartEditing(item.productId, item.adjustmentValue)
                         }
                       }}
-                    >
-                      {renderAdjustmentCell(item)}
-                    </td>
+                  >
+                    {renderAdjustmentCell(item)}
+                  </td>
                     <td className="px-4 py-3 font-semibold text-slate-900 text-right">
                       {newPrice !== undefined ? `$${newPrice}` : '—'}
                     </td>
