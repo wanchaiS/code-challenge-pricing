@@ -146,7 +146,7 @@ export interface ProductSearchParams {
 }
 
 export function fetchProductReferences() {
-  return request<ProductReferences>('/api/products/references')
+  return request<ProductReferences>('/api/products-references')
 }
 
 export function fetchProducts() {
@@ -161,7 +161,7 @@ export interface CreateProductInput {
   categoryId: string
   subCategoryId: string
   segmentId: string
-  styleId?: string
+  styleId: string | null
 }
 
 export function createProduct(input: CreateProductInput) {

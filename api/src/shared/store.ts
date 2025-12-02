@@ -1,6 +1,6 @@
 import type { PricingProfile } from '../profiles/models/profile.model.js';
-import type { User } from './types.js';
 import { seedBrands, seedCategories, seedProducts, seedSegments, seedStyles, seedSubCategories, seedUser } from './seed.js';
+import type { User } from './types.js';
 
 // In-memory database simulating MongoDB collections
 export const db = {
@@ -31,8 +31,5 @@ export const resetDb = (): void => {
 // Get current user (since we only have one user in this challenge)
 export const getCurrentUser = (): User => {
   const user = db.users[0]
-  if (!user) {
-    throw new Error('No user found')
-  }
   return user
 }

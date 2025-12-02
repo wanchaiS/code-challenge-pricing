@@ -28,7 +28,7 @@ export function EditProduct({
         categoryId: values.categoryId,
         subCategoryId: values.subCategoryId,
         segmentId: values.segmentId,
-        styleId: values.styleId || undefined,
+        styleId: values.styleId || null,
       }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['products'] })

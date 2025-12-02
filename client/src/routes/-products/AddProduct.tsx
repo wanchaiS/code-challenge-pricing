@@ -35,7 +35,7 @@ export function AddProduct({
       categoryId: values.categoryId,
       subCategoryId: values.subCategoryId,
       segmentId: values.segmentId,
-      styleId: values.styleId || undefined,
+      styleId: values.styleId || null,
     })
   }
 
