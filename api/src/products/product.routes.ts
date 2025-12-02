@@ -11,15 +11,13 @@ import {
   searchProducts,
   updateProduct,
 } from "./product.controller.js";
-import { getProductReferences } from "./product.references.controller.js";
 import {
   createProductSchema,
   errorSchema,
   productDtoSchema,
   productIdSchema,
   productQuerySchema,
-  productReferencesSchema,
-  updateProductSchema,
+  updateProductSchema
 } from "./schemas/product.schema.js";
 
 const router = Router();
@@ -112,36 +110,6 @@ router.get(
   asyncHandler(searchProducts),
 );
 
-// ============== Route: GET /api/products/filters ==============
-
-registry.registerPath({
-  method: "get",
-  path: "/api/products/references",
-  summary: "List references data",
-  description:
-    "Returns categories, subcategories, segments, and brands.",
-  tags: ["Products"],
-  responses: {
-    200: {
-      description: "References data",
-      content: {
-        "application/json": {
-          schema: productReferencesSchema,
-        },
-      },
-    },
-    500: {
-      description: "Server error",
-      content: {
-        "application/json": {
-          schema: errorSchema,
-        },
-      },
-    },
-  },
-});
-
-router.get("/references", asyncHandler(getProductReferences));
 
 // ============== Route: GET /api/products/:id ==============
 

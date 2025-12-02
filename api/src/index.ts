@@ -1,7 +1,8 @@
-import { corsOptions } from "./middleware/cors.js";
+import productReferencesRoutes from "#products/product.references.routes.js";
 import express from "express";
 import swaggerUi from "swagger-ui-express";
 import { generateSwaggerSpec } from "./config/swagger.js";
+import { corsOptions } from "./middleware/cors.js";
 import { errorHandler } from "./middleware/errorHandler.js";
 import productRoutes from "./products/product.routes.js";
 import profileRoutes from "./profiles/profile.routes.js";
@@ -21,6 +22,7 @@ app.get("/", (_, res) => {
 
 // API Routes
 app.use("/api/products", productRoutes);
+app.use("/api/products-references", productReferencesRoutes);
 app.use("/api/pricing-profiles", profileRoutes);
 
 // Generate OpenAPI spec "AFTER" routes are registered
