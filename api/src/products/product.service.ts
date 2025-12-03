@@ -2,7 +2,7 @@ import { randomUUID } from "node:crypto";
 import { ApiError, notFound } from "../middleware/errorHandler.js";
 import { getCurrentUser } from "../shared/store.js";
 import type { Product } from "./models/product.model.js";
-import { mapProductDto, buildProductReferenceLookups } from "./product.mapper.js";
+import { buildProductReferenceLookups, mapProductDto } from "./product.mapper.js";
 import { productRepository } from "./repositories/product.repository.js";
 import {
   brandRepository,
@@ -115,7 +115,7 @@ const INVALID_PRODUCT_REFERENCE = "INVALID_PRODUCT_REFERENCE";
 
 function ensureProductForOrg(id: string, orgId: string): Product {
   const product = productRepository.findById(id);
-  if (!product || product.orgId !== orgId) {
+  if (product?.orgId !== orgId) {
     throw notFound("Product");
   }
   return product;

@@ -15,6 +15,7 @@ const port = process.env["PORT"] ?? "9001";
 app.use(express.json());
 app.use(corsOptions);
 
+
 // Health check
 app.get("/", (_, res) => {
   res.json({ message: "FOBOH Pricing Module API", status: "running" });

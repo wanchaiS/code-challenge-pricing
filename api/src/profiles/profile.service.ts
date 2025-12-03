@@ -76,7 +76,7 @@ export function updatePricingProfile(
   let adjustmentValueForAll: number | null = null;
   if (payload.selectionType === SelectionType.ALL) {
     adjustmentValueForAll = payload.adjustmentValueForAll;
-    if (adjustmentValueForAll === null || adjustmentValueForAll === undefined) {
+    if (!adjustmentValueForAll) {
       throw new ApiError(400, "All-products profile requires an adjustment value", INVALID_PROFILE_CODE);
     }
   }
@@ -141,7 +141,7 @@ export function previewProfilePricing(
   let adjustmentValueForAll: number | null = null;
   if (payload.selectionType === SelectionType.ALL) {
     adjustmentValueForAll = payload.adjustmentValueForAll;
-    if (adjustmentValueForAll === null || adjustmentValueForAll === undefined) {
+    if (!adjustmentValueForAll) {
       throw new ApiError(400, "All-products profile requires an adjustment value", INVALID_PROFILE_CODE);
     }
   }
@@ -153,7 +153,7 @@ export function previewProfilePricing(
     adjustmentValueForAll: adjustmentValueForAll ?? null,
     basedOn: basedOnValue,
     incrementType: payload.incrementType,
-    name: payload.name ?? "Preview",
+    name: payload.name,
     selectionType: payload.selectionType,
     productAdjustments: payload.selectionType === SelectionType.ALL ? [] : normalizedAdjustments,
     createdAt: new Date(),
@@ -195,7 +195,7 @@ function normalizeAdjustments(
 }
 
 function ensureProfileAvailable(profile: PricingProfile | undefined, orgId: string): PricingProfile {
-  if (!profile || profile.orgId !== orgId) {
+  if (profile?.orgId !== orgId) {
     throw notFound("Pricing profile");
   }
   return profile;
@@ -211,7 +211,7 @@ function ensureBasedOnReference(orgId: string, basedOn: string | null, currentId
   }
 
   const baseProfile = profileRepository.findById(basedOn);
-  if (!baseProfile || baseProfile.orgId !== orgId) {
+  if (baseProfile?.orgId !== orgId) {
     throw new ApiError(400, "Base profile not found for this organization", INVALID_PROFILE_CODE);
   }
 }

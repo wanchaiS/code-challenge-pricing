@@ -1,6 +1,6 @@
-import { randomUUID } from "crypto";
 import { db } from '#shared/store.js';
 import { AdjustmentType, IncrementType } from '#shared/types.js';
+import { randomUUID } from "crypto";
 import type { CreatePricingProfileInput, PricingProfile, UpdatePricingProfileInput } from '../models/profile.model.js';
 
 export const profileRepository = {
@@ -43,7 +43,7 @@ export const profileRepository = {
     }
 
     db.pricingProfiles[index] = {
-      ...db.pricingProfiles[index]!,
+      ...db.pricingProfiles[index],
       basedOn: newBasedOn,
       updatedAt: new Date(),
     }
@@ -84,9 +84,6 @@ export const profileRepository = {
     }
 
     const existing = db.pricingProfiles[index]
-    if (!existing) {
-      return null
-    }
 
     db.pricingProfiles[index] = {
       ...existing,

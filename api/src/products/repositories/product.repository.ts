@@ -97,7 +97,6 @@ export const productRepository = {
     }
 
     const existing = db.products[index]
-    if (!existing) return null  
 
     const updated = { ...existing, ...updates }
     db.products[index] = updated

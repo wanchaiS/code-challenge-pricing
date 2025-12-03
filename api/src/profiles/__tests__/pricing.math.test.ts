@@ -28,13 +28,7 @@ describe("pricing calculations", () => {
     // from the base profile and then applies a 5% decrease. The final based-on
     // price should reflect both adjustments in order.
     const product = db.products[0];
-    if (!product) {
-      throw new Error("Seed product missing");
-    }
     const user = db.users[0];
-    if (!user) {
-      throw new Error("Seed user missing");
-    }
 
     seedProfileChain(product, user.orgId);
 

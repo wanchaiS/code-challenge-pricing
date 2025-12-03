@@ -1,13 +1,13 @@
-import type { Request, Response, NextFunction } from "express";
+import type { NextFunction, Request, Response } from "express";
 import { z } from "zod";
 
 /**
  * Generic validation middleware for request validation using Zod schemas
  */
 export function validate(schema: {
-  query?: z.ZodTypeAny;
-  params?: z.ZodTypeAny;
-  body?: z.ZodTypeAny;
+  query?: z.ZodType;
+  params?: z.ZodType;
+  body?: z.ZodType;
 }) {
   return async (req: Request, _res: Response, next: NextFunction) => {
     try {
